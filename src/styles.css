@@ -83,6 +83,17 @@ button:disabled {
   background: #555;
 }
 
+.hidden-file-input {
+  display: none;
+}
+
+.photo-delete-button {
+  margin-top: 10px;
+  height: 34px;
+  padding: 0;
+  font-size: 13px;
+}
+
 .points-total {
   margin: 12px 0 0;
   padding: 8px;
@@ -318,6 +329,15 @@ button:disabled {
   background: repeating-linear-gradient(white 0px, white 28px, #ddd 29px);
 }
 
+.clickable-photo-zone {
+  cursor: pointer;
+}
+
+.clickable-photo-zone:hover {
+  outline: 2px dashed #2563eb;
+  outline-offset: -6px;
+}
+
 .exercise-body img {
   display: block;
   max-width: 100%;
@@ -338,8 +358,12 @@ button:disabled {
 }
 
 .empty-zone {
-  color: #999;
+  color: #777;
   font-weight: bold;
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px dashed #aaa;
+  border-radius: 8px;
+  padding: 10px 14px;
 }
 
 .side-mark {
