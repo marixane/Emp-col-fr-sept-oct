@@ -650,6 +650,12 @@ function App() {
                 aria-label="Titre du devoir"
                 style={{ fontSize: `${getTitleFontSize(testTitle)}px` }}
               />
+              <div
+                className="export-title-display"
+                style={{ fontSize: `${getTitleFontSize(testTitle)}px` }}
+              >
+                {testTitle}
+              </div>
             </div>
 
             <div className="header-cell right-header-cell">
