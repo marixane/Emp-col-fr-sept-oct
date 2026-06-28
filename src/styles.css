@@ -46,10 +46,15 @@ small {
 }
 
 input,
+textarea,
 button {
   width: 100%;
   padding: 10px;
   margin-top: 5px;
+}
+
+textarea {
+  resize: vertical;
 }
 
 button {
@@ -94,15 +99,30 @@ button {
 
 .student-box,
 .note-box,
-.info-box {
+.title-box {
   padding: 8px;
   border-right: 3px solid #111;
   font-weight: bold;
 }
 
-.info-box {
+.title-box {
   border-right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  overflow: hidden;
+  line-height: 1.15;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.title-box strong {
+  display: block;
+  max-width: 100%;
+  max-height: 62px;
+  overflow: hidden;
+  white-space: normal;
 }
 
 .level-box {
