@@ -370,10 +370,10 @@ button:disabled {
 .resize-handle {
   position: absolute;
   top: -18px;
-  left: 640px;
-  right: 6px;
+  left: 595px;
+  right: -2px;
   width: auto;
-  height: 38px;
+  height: 40px;
   margin: 0;
   padding: 0;
   border: 0;
