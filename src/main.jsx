@@ -11,3 +11,8 @@ createRoot(document.getElementById('root')).render(
     <App />
   </React.StrictMode>
 );
+
+window.setTimeout(() => {
+  const pageTwoCheckbox = document.querySelector('.panel .total-lock-control input[type="checkbox"]');
+  if (pageTwoCheckbox?.checked) pageTwoCheckbox.click();
+}, 0);
