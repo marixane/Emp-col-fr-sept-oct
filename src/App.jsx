@@ -17,6 +17,15 @@ const clamp = (value, min, max) => Math.min(Math.max(Number(value), min), max);
 
 const roundToStep = (value) => Math.round(Number(value) / POINT_STEP) * POINT_STEP;
 
+const waitForExportStyles = () =>
+  new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.setTimeout(resolve, 80);
+      });
+    });
+  });
+
 const formatPoints = (value) => {
   const rounded = Math.round(Number(value) * 100) / 100;
   const text = Number.isInteger(rounded)
@@ -438,22 +447,47 @@ function App() {
     );
   };
 
-  const exportPdf = async () => {
-    if (!pageRef.current) return;
+  const createPdf = async () => {
+    if (!pageRef.current) return null;
 
     setIsExporting(true);
+    endDrag();
+    endResize();
 
+    await waitForExportStyles();
+
+    const canvas = await html2canvas(pageRef.current, {
+      scale: 2,
+      backgroundColor: '#ffffff',
+      useCORS: true,
+      ignoreElements: (element) =>
+        element.classList?.contains('photo-overlay-tools') ||
+        element.classList?.contains('mask-delete-button') ||
+        element.classList?.contains('mask-resize-handle'),
+    });
+
+    const imageData = canvas.toDataURL('image/jpeg', 1);
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    pdf.addImage(imageData, 'JPEG', 0, 0, 210, 297);
+    return pdf;
+  };
+
+  const exportPdf = async () => {
     try {
-      const canvas = await html2canvas(pageRef.current, {
-        scale: 2,
-        backgroundColor: '#ffffff',
-        useCORS: true,
-      });
+      const pdf = await createPdf();
+      pdf?.save('devoir-a4.pdf');
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
-      const imageData = canvas.toDataURL('image/jpeg', 1);
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      pdf.addImage(imageData, 'JPEG', 0, 0, 210, 297);
-      pdf.save('devoir-a4.pdf');
+  const previewPdf = async () => {
+    try {
+      const pdf = await createPdf();
+      if (!pdf) return;
+
+      const pdfUrl = pdf.output('bloburl');
+      window.open(pdfUrl, '_blank', 'noopener,noreferrer');
     } finally {
       setIsExporting(false);
     }
@@ -533,7 +567,11 @@ function App() {
           />
         ))}
 
-        <button type="button" onClick={exportPdf} disabled={isExporting}>
+        <button type="button" onClick={previewPdf} disabled={isExporting}>
+          {isExporting ? 'Préparation...' : 'Voir PDF'}
+        </button>
+
+        <button type="button" className="secondary" onClick={exportPdf} disabled={isExporting}>
           {isExporting ? 'Export en cours...' : 'Exporter PDF A4'}
         </button>
       </section>
