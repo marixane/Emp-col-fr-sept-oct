@@ -9,14 +9,14 @@ const MIN_POINTS = 1;
 const MAX_POINTS = 20;
 const TOTAL_POINTS = 20;
 const TOTAL_EXERCISE_HEIGHT = 986;
+const TOTAL_SECOND_PAGE_HEIGHT = 1065;
 const MIN_EXERCISE_HEIGHT = 120;
 const MIN_EXERCISES = 1;
 const MAX_EXERCISES = 6;
-const INDIVIDUAL_TITLE = 'Devoir individuel de Mathématique';
-const HOMEWORK_TITLE = 'Devoir à la maison de Mathématique';
+const INDIVIDUAL_TITLE = 'Devoir individuel de Mathématique\nN°: 1 Semestre: 1 Lycée El jamai ,Tanger';
+const HOMEWORK_TITLE = 'Devoir à la maison de Mathématique\nN°: 1 Semestre: 1 Lycée El jamai ,Tanger';
 
 const clamp = (value, min, max) => Math.min(Math.max(Number(value), min), max);
-
 const roundToStep = (value) => Math.round(Number(value) / POINT_STEP) * POINT_STEP;
 
 const waitForExportStyles = () =>
@@ -30,10 +30,7 @@ const waitForExportStyles = () =>
 
 const formatPoints = (value) => {
   const rounded = Math.round(Number(value) * 100) / 100;
-  const text = Number.isInteger(rounded)
-    ? String(rounded)
-    : String(rounded).replace('.', ',');
-
+  const text = Number.isInteger(rounded) ? String(rounded) : String(rounded).replace('.', ',');
   return `${text} ${rounded === 1 ? 'Point' : 'Points'}`;
 };
 
@@ -62,8 +59,7 @@ const getBalancedPoints = (count) => {
 };
 
 const createExercise = (index, points = 5) => ({
-  id: `ex${index + 1}-${Date.now()}`,
-  title: `Exercice ${index + 1}`,
+  id: `ex${index + 1}-${Date.now()}-${Math.random().toString(36).slice(2)}`,
   points,
   image: null,
   zoom: 100,
@@ -77,10 +73,10 @@ const createExercises = (count) => {
   return Array.from({ length: count }, (_, index) => createExercise(index, points[index]));
 };
 
-const createHeights = (count) => {
-  const base = Math.floor(TOTAL_EXERCISE_HEIGHT / count);
+const createHeights = (count, totalHeight = TOTAL_EXERCISE_HEIGHT) => {
+  const base = Math.floor(totalHeight / count);
   const heights = Array.from({ length: count }, () => base);
-  heights[count - 1] = TOTAL_EXERCISE_HEIGHT - base * (count - 1);
+  heights[count - 1] = totalHeight - base * (count - 1);
   return heights;
 };
 
@@ -91,12 +87,14 @@ function App() {
   const [testTitle, setTestTitle] = useState(INDIVIDUAL_TITLE);
   const [teacher, setTeacher] = useState('Prof : Marwane.R');
   const [exercises, setExercises] = useState(() => createExercises(3));
+  const [secondPageExercises, setSecondPageExercises] = useState(() => createExercises(3));
   const [isTotalLocked, setIsTotalLocked] = useState(true);
   const [exerciseHeights, setExerciseHeights] = useState(() => [430, 278, 278]);
+  const [secondPageHeights, setSecondPageHeights] = useState(() => createHeights(3, TOTAL_SECOND_PAGE_HEIGHT));
   const [isExporting, setIsExporting] = useState(false);
   const [dragState, setDragState] = useState(null);
   const [resizeState, setResizeState] = useState(null);
-  const pageRef = useRef(null);
+  const pageRefs = useRef([]);
   const fileInputRefs = useRef({});
 
   const duration = DURATION_OPTIONS[durationIndex];
@@ -109,33 +107,39 @@ function App() {
   };
 
   const changeDuration = (step) => {
-    setDurationIndex((currentIndex) =>
-      clamp(currentIndex + step, 0, DURATION_OPTIONS.length - 1)
-    );
+    setDurationIndex((currentIndex) => clamp(currentIndex + step, 0, DURATION_OPTIONS.length - 1));
   };
 
-  const updateExercise = (id, field, value) => {
-    setExercises((items) =>
+  const setPageExercises = (page, updater) => {
+    if (page === 2) setSecondPageExercises(updater);
+    else setExercises(updater);
+  };
+
+  const getPageExercises = (page) => (page === 2 ? secondPageExercises : exercises);
+
+  const updateExerciseOnPage = (page, id, field, value) => {
+    setPageExercises(page, (items) =>
       items.map((item) => (item.id === id ? { ...item, [field]: value } : item))
     );
   };
 
-  const getCompensationIndex = (index) => {
-    if (exercises.length < 2) return -1;
-    return index < exercises.length - 1 ? index + 1 : index - 1;
+  const getCompensationIndex = (items, index) => {
+    if (items.length < 2) return -1;
+    return index < items.length - 1 ? index + 1 : index - 1;
   };
 
-  const canChangeExercisePoints = (index, step) => {
-    const nextTargetPoints = Math.round((exercises[index].points + step * POINT_STEP) * 100) / 100;
+  const canChangeExercisePoints = (page, index, step) => {
+    const items = getPageExercises(page);
+    const nextTargetPoints = Math.round((items[index].points + step * POINT_STEP) * 100) / 100;
 
-    if (!isTotalLocked) {
+    if (!isTotalLocked || page === 2) {
       return nextTargetPoints >= MIN_POINTS && nextTargetPoints <= MAX_POINTS;
     }
 
-    const compensationIndex = getCompensationIndex(index);
+    const compensationIndex = getCompensationIndex(items, index);
     if (compensationIndex < 0) return false;
 
-    const nextCompensationPoints = Math.round((exercises[compensationIndex].points - step * POINT_STEP) * 100) / 100;
+    const nextCompensationPoints = Math.round((items[compensationIndex].points - step * POINT_STEP) * 100) / 100;
 
     return (
       nextTargetPoints >= MIN_POINTS &&
@@ -145,44 +149,31 @@ function App() {
     );
   };
 
-  const changeExercisePoints = (index, step) => {
-    if (!canChangeExercisePoints(index, step)) return;
+  const changeExercisePoints = (page, index, step) => {
+    if (!canChangeExercisePoints(page, index, step)) return;
 
-    if (!isTotalLocked) {
-      setExercises((items) =>
-        items.map((item, itemIndex) =>
+    setPageExercises(page, (items) => {
+      if (!isTotalLocked || page === 2) {
+        return items.map((item, itemIndex) =>
           itemIndex === index
-            ? {
-                ...item,
-                points: Math.round((item.points + step * POINT_STEP) * 100) / 100,
-              }
+            ? { ...item, points: Math.round((item.points + step * POINT_STEP) * 100) / 100 }
             : item
-        )
-      );
-      return;
-    }
+        );
+      }
 
-    const compensationIndex = getCompensationIndex(index);
-
-    setExercises((items) =>
-      items.map((item, itemIndex) => {
+      const compensationIndex = getCompensationIndex(items, index);
+      return items.map((item, itemIndex) => {
         if (itemIndex === index) {
-          return {
-            ...item,
-            points: Math.round((item.points + step * POINT_STEP) * 100) / 100,
-          };
+          return { ...item, points: Math.round((item.points + step * POINT_STEP) * 100) / 100 };
         }
 
         if (itemIndex === compensationIndex) {
-          return {
-            ...item,
-            points: Math.round((item.points - step * POINT_STEP) * 100) / 100,
-          };
+          return { ...item, points: Math.round((item.points - step * POINT_STEP) * 100) / 100 };
         }
 
         return item;
-      })
-    );
+      });
+    });
   };
 
   const changeTotalLock = (checked) => {
@@ -196,46 +187,41 @@ function App() {
     });
   };
 
-  const changeExerciseCount = (step) => {
-    const nextCount = clamp(exercises.length + step, MIN_EXERCISES, MAX_EXERCISES);
-    if (nextCount === exercises.length) return;
+  const changeExerciseCount = (page, step) => {
+    const items = getPageExercises(page);
+    const nextCount = clamp(items.length + step, MIN_EXERCISES, MAX_EXERCISES);
+    if (nextCount === items.length) return;
 
-    setExercises((items) => {
+    const totalHeight = page === 2 ? TOTAL_SECOND_PAGE_HEIGHT : TOTAL_EXERCISE_HEIGHT;
+
+    setPageExercises(page, (currentItems) => {
       const balanced = getBalancedPoints(nextCount);
       return Array.from({ length: nextCount }, (_, index) => {
-        const existing = items[index];
-        const nextPoints = isTotalLocked ? balanced[index] : existing?.points ?? 5;
-
-        return existing
-          ? { ...existing, title: `Exercice ${index + 1}`, points: nextPoints, masks: existing.masks ?? [] }
-          : createExercise(index, nextPoints);
+        const existing = currentItems[index];
+        const nextPoints = page === 1 && isTotalLocked ? balanced[index] : existing?.points ?? 5;
+        return existing ? { ...existing, points: nextPoints, masks: existing.masks ?? [] } : createExercise(index, nextPoints);
       });
     });
 
-    setExerciseHeights((heights) => {
-      if (nextCount > heights.length) {
-        return createHeights(nextCount);
-      }
+    const setHeights = page === 2 ? setSecondPageHeights : setExerciseHeights;
+    setHeights((heights) => {
+      if (nextCount > heights.length) return createHeights(nextCount, totalHeight);
 
       const kept = heights.slice(0, nextCount);
       const sum = kept.reduce((total, height) => total + height, 0);
-      const factor = TOTAL_EXERCISE_HEIGHT / sum;
+      const factor = totalHeight / sum;
       const resized = kept.map((height) => Math.max(MIN_EXERCISE_HEIGHT, Math.round(height * factor)));
-      const diff = TOTAL_EXERCISE_HEIGHT - resized.reduce((total, height) => total + height, 0);
+      const diff = totalHeight - resized.reduce((total, height) => total + height, 0);
       resized[resized.length - 1] += diff;
       return resized;
     });
   };
 
-  const updateImagePosition = (id, nextX, nextY) => {
-    setExercises((items) =>
+  const updateImagePosition = (page, id, nextX, nextY) => {
+    setPageExercises(page, (items) =>
       items.map((item) =>
         item.id === id
-          ? {
-              ...item,
-              x: clamp(nextX, -200, 200),
-              y: clamp(nextY, -200, 200),
-            }
+          ? { ...item, x: clamp(nextX, -200, 200), y: clamp(nextY, -200, 200) }
           : item
       )
     );
@@ -253,16 +239,17 @@ function App() {
     });
   };
 
-  const startResize = (event, lowerExerciseIndex) => {
+  const startResize = (event, page, lowerExerciseIndex) => {
     event.preventDefault();
     event.stopPropagation();
     setDragState(null);
 
     setResizeState({
+      page,
       upperIndex: lowerExerciseIndex - 1,
       lowerIndex: lowerExerciseIndex,
       startClientY: event.clientY,
-      startHeights: exerciseHeights,
+      startHeights: page === 2 ? secondPageHeights : exerciseHeights,
     });
   };
 
@@ -270,36 +257,31 @@ function App() {
     if (!resizeState) return;
 
     const deltaY = event.clientY - resizeState.startClientY;
-    setExerciseHeights(
-      applyHeightDelta(
-        resizeState.upperIndex,
-        resizeState.lowerIndex,
-        deltaY,
-        resizeState.startHeights
-      )
+    const nextHeights = applyHeightDelta(
+      resizeState.upperIndex,
+      resizeState.lowerIndex,
+      deltaY,
+      resizeState.startHeights
     );
+
+    if (resizeState.page === 2) setSecondPageHeights(nextHeights);
+    else setExerciseHeights(nextHeights);
   };
 
-  const endResize = () => {
-    setResizeState(null);
+  const endResize = () => setResizeState(null);
+
+  const updatePhotoControl = (page, id, field, value) => {
+    const limits = { zoom: [60, 220], x: [-200, 200], y: [-200, 200] };
+    updateExerciseOnPage(page, id, field, clamp(value, limits[field][0], limits[field][1]));
   };
 
-  const updatePhotoControl = (id, field, value) => {
-    const limits = {
-      zoom: [60, 220],
-      x: [-200, 200],
-      y: [-200, 200],
-    };
-
-    updateExercise(id, field, clamp(value, limits[field][0], limits[field][1]));
-  };
-
-  const startDrag = (event, exercise) => {
+  const startDrag = (event, page, exercise) => {
     event.preventDefault();
     setResizeState(null);
 
     setDragState({
       type: 'photo',
+      page,
       id: exercise.id,
       startClientX: event.clientX,
       startClientY: event.clientY,
@@ -308,36 +290,26 @@ function App() {
     });
   };
 
-  const addMask = (exerciseId) => {
-    setExercises((items) =>
+  const addMask = (page, exerciseId) => {
+    setPageExercises(page, (items) =>
       items.map((item) => {
         if (item.id !== exerciseId) return item;
-
-        const nextMask = {
-          id: `mask-${Date.now()}`,
-          x: 120,
-          y: 90,
-          width: 160,
-          height: 60,
-        };
-
+        const nextMask = { id: `mask-${Date.now()}`, x: 120, y: 90, width: 160, height: 60 };
         return { ...item, masks: [...(item.masks ?? []), nextMask] };
       })
     );
   };
 
-  const deleteMask = (exerciseId, maskId) => {
-    setExercises((items) =>
+  const deleteMask = (page, exerciseId, maskId) => {
+    setPageExercises(page, (items) =>
       items.map((item) =>
-        item.id === exerciseId
-          ? { ...item, masks: (item.masks ?? []).filter((mask) => mask.id !== maskId) }
-          : item
+        item.id === exerciseId ? { ...item, masks: (item.masks ?? []).filter((mask) => mask.id !== maskId) } : item
       )
     );
   };
 
-  const updateMask = (exerciseId, maskId, updates) => {
-    setExercises((items) =>
+  const updateMask = (page, exerciseId, maskId, updates) => {
+    setPageExercises(page, (items) =>
       items.map((item) =>
         item.id === exerciseId
           ? {
@@ -360,12 +332,13 @@ function App() {
     );
   };
 
-  const startMaskDrag = (event, exerciseId, mask) => {
+  const startMaskDrag = (event, page, exerciseId, mask) => {
     event.preventDefault();
     event.stopPropagation();
     setResizeState(null);
     setDragState({
       type: 'mask-move',
+      page,
       exerciseId,
       maskId: mask.id,
       startClientX: event.clientX,
@@ -375,12 +348,13 @@ function App() {
     });
   };
 
-  const startMaskResize = (event, exerciseId, mask) => {
+  const startMaskResize = (event, page, exerciseId, mask) => {
     event.preventDefault();
     event.stopPropagation();
     setResizeState(null);
     setDragState({
       type: 'mask-resize',
+      page,
       exerciseId,
       maskId: mask.id,
       startClientX: event.clientX,
@@ -397,12 +371,12 @@ function App() {
     const deltaY = event.clientY - dragState.startClientY;
 
     if (dragState.type === 'photo') {
-      updateImagePosition(dragState.id, dragState.startX + deltaX, dragState.startY + deltaY);
+      updateImagePosition(dragState.page, dragState.id, dragState.startX + deltaX, dragState.startY + deltaY);
       return;
     }
 
     if (dragState.type === 'mask-move') {
-      updateMask(dragState.exerciseId, dragState.maskId, {
+      updateMask(dragState.page, dragState.exerciseId, dragState.maskId, {
         x: dragState.startX + deltaX,
         y: dragState.startY + deltaY,
       });
@@ -410,54 +384,39 @@ function App() {
     }
 
     if (dragState.type === 'mask-resize') {
-      updateMask(dragState.exerciseId, dragState.maskId, {
+      updateMask(dragState.page, dragState.exerciseId, dragState.maskId, {
         width: dragState.startWidth + deltaX,
         height: dragState.startHeight + deltaY,
       });
     }
   };
 
-  const endDrag = () => {
-    setDragState(null);
-  };
+  const endDrag = () => setDragState(null);
 
   const triggerExerciseFileInput = (id) => {
     if (isExporting) return;
     fileInputRefs.current[id]?.click();
   };
 
-  const handleExerciseImage = (id, file) => {
+  const handleExerciseImage = (page, id, file) => {
     if (!file || !file.type.startsWith('image/')) return;
 
-    setExercises((items) =>
+    setPageExercises(page, (items) =>
       items.map((item) =>
         item.id === id
-          ? {
-              ...item,
-              image: {
-                name: file.name,
-                url: URL.createObjectURL(file),
-              },
-              zoom: 100,
-              x: 0,
-              y: 0,
-              masks: [],
-            }
+          ? { ...item, image: { name: file.name, url: URL.createObjectURL(file) }, zoom: 100, x: 0, y: 0, masks: [] }
           : item
       )
     );
   };
 
-  const clearExerciseImage = (id) => {
-    setExercises((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, image: null, masks: [] } : item
-      )
-    );
+  const clearExerciseImage = (page, id) => {
+    setPageExercises(page, (items) => items.map((item) => (item.id === id ? { ...item, image: null, masks: [] } : item)));
   };
 
   const createPdf = async () => {
-    if (!pageRef.current) return null;
+    const pages = pageRefs.current.filter(Boolean);
+    if (pages.length === 0) return null;
 
     setIsExporting(true);
     endDrag();
@@ -465,19 +424,31 @@ function App() {
 
     await waitForExportStyles();
 
-    const canvas = await html2canvas(pageRef.current, {
-      scale: 2,
-      backgroundColor: '#ffffff',
-      useCORS: true,
-      ignoreElements: (element) =>
-        element.classList?.contains('photo-overlay-tools') ||
-        element.classList?.contains('mask-delete-button') ||
-        element.classList?.contains('mask-resize-handle'),
-    });
-
-    const imageData = canvas.toDataURL('image/jpeg', 1);
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    pdf.addImage(imageData, 'JPEG', 0, 0, 210, 297);
+
+    for (let pageIndex = 0; pageIndex < pages.length; pageIndex += 1) {
+      const page = pages[pageIndex];
+      page.querySelectorAll('textarea').forEach((field) => {
+        field.blur();
+        field.scrollLeft = 0;
+        field.scrollTop = 0;
+      });
+
+      const canvas = await html2canvas(page, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        useCORS: true,
+        ignoreElements: (element) =>
+          element.classList?.contains('photo-overlay-tools') ||
+          element.classList?.contains('mask-delete-button') ||
+          element.classList?.contains('mask-resize-handle'),
+      });
+
+      const imageData = canvas.toDataURL('image/jpeg', 1);
+      if (pageIndex > 0) pdf.addPage('a4', 'portrait');
+      pdf.addImage(imageData, 'JPEG', 0, 0, 210, 297);
+    }
+
     return pdf;
   };
 
@@ -502,6 +473,125 @@ function App() {
     }
   };
 
+  const renderExerciseList = (page, items, heights, startNumber) => (
+    <div className="exercise-list">
+      {items.map((exercise, index) => {
+        const exerciseTitle = `Exercice ${startNumber + index}`;
+        return (
+          <section
+            className={`exam-exercise ex-${index + 1}`}
+            key={exercise.id}
+            style={{ height: `${heights[index]}px` }}
+          >
+            {index > 0 && (
+              <button
+                type="button"
+                className="resize-handle"
+                onMouseDown={(event) => startResize(event, page, index)}
+                aria-label={`Modifier la hauteur de ${exerciseTitle}`}
+              />
+            )}
+            <div className="exercise-title exercise-title-controls">
+              {isHomework ? (
+                <span>{exerciseTitle}</span>
+              ) : (
+                <>
+                  <span>{exerciseTitle} : </span>
+                  <span className="points-decoration">* (</span>
+                  <button
+                    type="button"
+                    onClick={() => changeExercisePoints(page, index, -1)}
+                    disabled={!canChangeExercisePoints(page, index, -1)}
+                    aria-label={`Diminuer les points de ${exerciseTitle}`}
+                  >
+                    −
+                  </button>
+                  <strong>{formatPoints(exercise.points)}</strong>
+                  <button
+                    type="button"
+                    onClick={() => changeExercisePoints(page, index, 1)}
+                    disabled={!canChangeExercisePoints(page, index, 1)}
+                    aria-label={`Augmenter les points de ${exerciseTitle}`}
+                  >
+                    +
+                  </button>
+                  <span className="points-decoration">) *</span>
+                </>
+              )}
+            </div>
+            <div
+              className="exercise-body clickable-photo-zone"
+              onClick={() => {
+                if (!exercise.image) triggerExerciseFileInput(exercise.id);
+              }}
+              title={exercise.image ? '' : 'Cliquer pour choisir la photo'}
+            >
+              {exercise.image && (
+                <div className="photo-overlay-tools" onClick={(event) => event.stopPropagation()}>
+                  <button type="button" className="photo-tool-button" onClick={() => triggerExerciseFileInput(exercise.id)}>
+                    Changer photo
+                  </button>
+                  <button type="button" className="photo-tool-button" onClick={() => addMask(page, exercise.id)}>
+                    Rectangle blanc
+                  </button>
+                  <button type="button" className="photo-tool-button danger" onClick={() => clearExerciseImage(page, exercise.id)}>
+                    Supprimer
+                  </button>
+                  <label className="photo-zoom-control">
+                    Zoom
+                    <input
+                      type="range"
+                      min="60"
+                      max="220"
+                      value={exercise.zoom}
+                      onChange={(e) => updatePhotoControl(page, exercise.id, 'zoom', e.target.value)}
+                    />
+                    <span>{exercise.zoom}%</span>
+                  </label>
+                </div>
+              )}
+              {exercise.image ? (
+                <>
+                  <img
+                    className="draggable-photo"
+                    src={exercise.image.url}
+                    alt={exercise.image.name}
+                    onMouseDown={(event) => startDrag(event, page, exercise)}
+                    draggable="false"
+                    style={{ transform: `translate(${exercise.x}px, ${exercise.y}px) scale(${exercise.zoom / 100})` }}
+                  />
+                  {(exercise.masks ?? []).map((mask) => (
+                    <div
+                      className="white-mask"
+                      key={mask.id}
+                      onMouseDown={(event) => startMaskDrag(event, page, exercise.id, mask)}
+                      style={{ left: `${mask.x}px`, top: `${mask.y}px`, width: `${mask.width}px`, height: `${mask.height}px` }}
+                    >
+                      <button
+                        type="button"
+                        className="mask-delete-button"
+                        onMouseDown={(event) => event.stopPropagation()}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          deleteMask(page, exercise.id, mask.id);
+                        }}
+                      >
+                        ×
+                      </button>
+                      <span className="mask-resize-handle" onMouseDown={(event) => startMaskResize(event, page, exercise.id, mask)} />
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <div className="empty-zone">Clique ici pour choisir la photo</div>
+              )}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  );
+
   return (
     <main
       className={`app-shell ${resizeState ? 'is-resizing' : ''}`}
@@ -521,25 +611,15 @@ function App() {
       <section className="panel">
         <p className="eyebrow">A4 Exam Maker</p>
         <h1>Créer une feuille A4 avec entête fixe</h1>
-        <p className="intro">
-          Choisis le type de devoir, puis le nombre d’exercices entre 1 et 6.
-        </p>
+        <p className="intro">Choisis le type de devoir, puis le nombre d’exercices par page.</p>
 
         <div className="form-group">
           <label>Type de devoir</label>
           <div className="duration-control compact-control assignment-control">
-            <button
-              type="button"
-              onClick={() => changeAssignmentType('individual')}
-              disabled={assignmentType === 'individual'}
-            >
+            <button type="button" onClick={() => changeAssignmentType('individual')} disabled={assignmentType === 'individual'}>
               Individuel
             </button>
-            <button
-              type="button"
-              onClick={() => changeAssignmentType('homework')}
-              disabled={assignmentType === 'homework'}
-            >
+            <button type="button" onClick={() => changeAssignmentType('homework')} disabled={assignmentType === 'homework'}>
               À la maison
             </button>
           </div>
@@ -548,46 +628,44 @@ function App() {
         {!isHomework && (
           <>
             <label className="total-lock-control">
-              <input
-                type="checkbox"
-                checked={isTotalLocked}
-                onChange={(e) => changeTotalLock(e.target.checked)}
-              />
-              Total bloqué à 20 points
+              <input type="checkbox" checked={isTotalLocked} onChange={(e) => changeTotalLock(e.target.checked)} />
+              Total page 1 bloqué à 20 points
             </label>
 
             <p className={`points-total ${isTotalLocked ? 'locked' : 'free'}`}>
-              {isTotalLocked ? 'Total bloqué : ' : 'Total libre : '}
+              {isTotalLocked ? 'Total page 1 bloqué : ' : 'Total page 1 libre : '}
               {formatPoints(totalPoints)}
             </p>
           </>
         )}
 
         <div className="form-group">
-          <label>Nombre d’exercices</label>
+          <label>Nombre d’exercices page 1</label>
           <div className="duration-control compact-control">
-            <button
-              type="button"
-              onClick={() => changeExerciseCount(-1)}
-              disabled={exercises.length === MIN_EXERCISES}
-              aria-label="Diminuer le nombre d’exercices"
-            >
+            <button type="button" onClick={() => changeExerciseCount(1, -1)} disabled={exercises.length === MIN_EXERCISES}>
               −
             </button>
             <strong>{exercises.length}</strong>
-            <button
-              type="button"
-              onClick={() => changeExerciseCount(1)}
-              disabled={exercises.length === MAX_EXERCISES}
-              aria-label="Augmenter le nombre d’exercices"
-            >
+            <button type="button" onClick={() => changeExerciseCount(1, 1)} disabled={exercises.length === MAX_EXERCISES}>
               +
             </button>
           </div>
-          <small>Minimum 1, maximum 6 exercices.</small>
         </div>
 
-        {exercises.map((exercise) => (
+        <div className="form-group">
+          <label>Nombre d’exercices page 2</label>
+          <div className="duration-control compact-control">
+            <button type="button" onClick={() => changeExerciseCount(2, -1)} disabled={secondPageExercises.length === MIN_EXERCISES}>
+              −
+            </button>
+            <strong>{secondPageExercises.length}</strong>
+            <button type="button" onClick={() => changeExerciseCount(2, 1)} disabled={secondPageExercises.length === MAX_EXERCISES}>
+              +
+            </button>
+          </div>
+        </div>
+
+        {[...exercises.map((exercise) => ({ exercise, page: 1 })), ...secondPageExercises.map((exercise) => ({ exercise, page: 2 }))].map(({ exercise, page }) => (
           <input
             key={exercise.id}
             ref={(input) => {
@@ -596,7 +674,7 @@ function App() {
             className="hidden-file-input"
             type="file"
             accept="image/*"
-            onChange={(e) => handleExerciseImage(exercise.id, e.target.files?.[0])}
+            onChange={(e) => handleExerciseImage(page, exercise.id, e.target.files?.[0])}
           />
         ))}
 
@@ -610,32 +688,16 @@ function App() {
       </section>
 
       <section className="preview-zone">
-        <div className={`a4-page exam-page ${isExporting ? 'is-exporting' : ''}`} ref={pageRef}>
+        <div className={`a4-page exam-page ${isExporting ? 'is-exporting' : ''}`} ref={(element) => { pageRefs.current[0] = element; }}>
           <header className="exam-header three-cell-header">
             <div className="header-cell left-header-cell class-duration-header">
-              <textarea
-                className="inline-class-input"
-                value={studentLevel}
-                onChange={(e) => setStudentLevel(e.target.value)}
-                rows="1"
-                aria-label="Classe"
-              />
+              <textarea className="inline-class-input" value={studentLevel} onChange={(e) => setStudentLevel(e.target.value)} rows="1" aria-label="Classe" />
               <div className="tiny-duration-control">
-                <button
-                  type="button"
-                  onClick={() => changeDuration(-1)}
-                  disabled={durationIndex === 0}
-                  aria-label="Diminuer la durée"
-                >
+                <button type="button" onClick={() => changeDuration(-1)} disabled={durationIndex === 0} aria-label="Diminuer la durée">
                   −
                 </button>
                 <strong>{duration}</strong>
-                <button
-                  type="button"
-                  onClick={() => changeDuration(1)}
-                  disabled={durationIndex === DURATION_OPTIONS.length - 1}
-                  aria-label="Augmenter la durée"
-                >
+                <button type="button" onClick={() => changeDuration(1)} disabled={durationIndex === DURATION_OPTIONS.length - 1} aria-label="Augmenter la durée">
                   +
                 </button>
               </div>
@@ -650,12 +712,6 @@ function App() {
                 aria-label="Titre du devoir"
                 style={{ fontSize: `${getTitleFontSize(testTitle)}px` }}
               />
-              <div
-                className="export-title-display"
-                style={{ fontSize: `${getTitleFontSize(testTitle)}px` }}
-              >
-                {testTitle}
-              </div>
             </div>
 
             <div className="header-cell right-header-cell">
@@ -670,141 +726,11 @@ function App() {
             </div>
           </header>
 
-          <div className="exercise-list">
-            {exercises.map((exercise, index) => (
-              <section
-                className={`exam-exercise ex-${index + 1}`}
-                key={exercise.id}
-                style={{ height: `${exerciseHeights[index]}px` }}
-              >
-                {index > 0 && (
-                  <button
-                    type="button"
-                    className="resize-handle"
-                    onMouseDown={(event) => startResize(event, index)}
-                    aria-label={`Modifier la hauteur de ${exercise.title}`}
-                  />
-                )}
-                <div className="exercise-title exercise-title-controls">
-                  {isHomework ? (
-                    <span>{exercise.title}</span>
-                  ) : (
-                    <>
-                      <span>{exercise.title} : </span>
-                      <span className="points-decoration">* (</span>
-                      <button
-                        type="button"
-                        onClick={() => changeExercisePoints(index, -1)}
-                        disabled={!canChangeExercisePoints(index, -1)}
-                        aria-label={`Diminuer les points de ${exercise.title}`}
-                      >
-                        −
-                      </button>
-                      <strong>{formatPoints(exercise.points)}</strong>
-                      <button
-                        type="button"
-                        onClick={() => changeExercisePoints(index, 1)}
-                        disabled={!canChangeExercisePoints(index, 1)}
-                        aria-label={`Augmenter les points de ${exercise.title}`}
-                      >
-                        +
-                      </button>
-                      <span className="points-decoration">) *</span>
-                    </>
-                  )}
-                </div>
-                <div
-                  className="exercise-body clickable-photo-zone"
-                  onClick={() => {
-                    if (!exercise.image) triggerExerciseFileInput(exercise.id);
-                  }}
-                  title={exercise.image ? '' : 'Cliquer pour choisir la photo'}
-                >
-                  {exercise.image && (
-                    <div className="photo-overlay-tools" onClick={(event) => event.stopPropagation()}>
-                      <button
-                        type="button"
-                        className="photo-tool-button"
-                        onClick={() => triggerExerciseFileInput(exercise.id)}
-                      >
-                        Changer photo
-                      </button>
-                      <button
-                        type="button"
-                        className="photo-tool-button"
-                        onClick={() => addMask(exercise.id)}
-                      >
-                        Rectangle blanc
-                      </button>
-                      <button
-                        type="button"
-                        className="photo-tool-button danger"
-                        onClick={() => clearExerciseImage(exercise.id)}
-                      >
-                        Supprimer
-                      </button>
-                      <label className="photo-zoom-control">
-                        Zoom
-                        <input
-                          type="range"
-                          min="60"
-                          max="220"
-                          value={exercise.zoom}
-                          onChange={(e) => updatePhotoControl(exercise.id, 'zoom', e.target.value)}
-                        />
-                        <span>{exercise.zoom}%</span>
-                      </label>
-                    </div>
-                  )}
-                  {exercise.image ? (
-                    <>
-                      <img
-                        className="draggable-photo"
-                        src={exercise.image.url}
-                        alt={exercise.image.name}
-                        onMouseDown={(event) => startDrag(event, exercise)}
-                        draggable="false"
-                        style={{
-                          transform: `translate(${exercise.x}px, ${exercise.y}px) scale(${exercise.zoom / 100})`,
-                        }}
-                      />
-                      {(exercise.masks ?? []).map((mask) => (
-                        <div
-                          className="white-mask"
-                          key={mask.id}
-                          onMouseDown={(event) => startMaskDrag(event, exercise.id, mask)}
-                          style={{
-                            left: `${mask.x}px`,
-                            top: `${mask.y}px`,
-                            width: `${mask.width}px`,
-                            height: `${mask.height}px`,
-                          }}
-                        >
-                          <button
-                            type="button"
-                            className="mask-delete-button"
-                            onMouseDown={(event) => event.stopPropagation()}
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              deleteMask(exercise.id, mask.id);
-                            }}
-                          >
-                            ×
-                          </button>
-                          <span
-                            className="mask-resize-handle"
-                            onMouseDown={(event) => startMaskResize(event, exercise.id, mask)}
-                          />
-                        </div>
-                      ))}
-                    </>
-                  ) : (
-                    <div className="empty-zone">Clique ici pour choisir la photo</div>
-                  )}
-                </div>
-              </section>
-            ))}
-          </div>
+          {renderExerciseList(1, exercises, exerciseHeights, 1)}
+        </div>
+
+        <div className={`a4-page exam-page second-page ${isExporting ? 'is-exporting' : ''}`} ref={(element) => { pageRefs.current[1] = element; }}>
+          {renderExerciseList(2, secondPageExercises, secondPageHeights, exercises.length + 1)}
         </div>
       </section>
     </main>
