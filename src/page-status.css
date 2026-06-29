@@ -23,6 +23,18 @@
   background: #e2e8f0 !important;
 }
 
+.compact-control button:not(:disabled),
+.tiny-duration-control button:not(:disabled),
+.exercise-title-controls button:not(:disabled) {
+  cursor: pointer !important;
+}
+
+.compact-control button:disabled,
+.tiny-duration-control button:disabled,
+.exercise-title-controls button:disabled {
+  cursor: not-allowed !important;
+}
+
 .panel h1,
 .panel .intro {
   display: none !important;
