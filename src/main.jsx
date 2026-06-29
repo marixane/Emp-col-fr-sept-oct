@@ -11,6 +11,7 @@ import './extra-pages-full-height.css';
 import './header-duration-bigger.css';
 import './points-buttons-below.css';
 import './mobile-responsive.css';
+import './bar-mark-vertical.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
