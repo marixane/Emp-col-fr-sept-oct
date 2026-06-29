@@ -31,6 +31,7 @@ import './white-mask-fix.css';
 import './page-date-footer.css';
 import './page-date-footer.js';
 import './note-scale-buttons.css';
+import './note-counter-pts.js';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
