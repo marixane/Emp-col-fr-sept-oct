@@ -16,6 +16,14 @@
   text-align: center !important;
 }
 
+.exercise-title-controls .points-decoration:first-of-type {
+  transform: translateX(6px) !important;
+}
+
+.exercise-title-controls .points-decoration:last-of-type {
+  transform: translateX(-8px) !important;
+}
+
 .exercise-title-controls .points-decoration::after {
   display: none !important;
   content: none !important;
