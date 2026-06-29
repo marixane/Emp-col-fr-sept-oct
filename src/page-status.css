@@ -60,6 +60,21 @@
   color: #111;
 }
 
-.panel .points-total {
+.panel .points-total.locked {
   display: none !important;
+}
+
+.panel .points-total.free {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  margin: 6px 0 0 !important;
+  padding: 6px 10px !important;
+  border: 2px solid #f59e0b !important;
+  border-radius: 10px !important;
+  background: #fff7ed !important;
+  color: #9a3412 !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
 }
