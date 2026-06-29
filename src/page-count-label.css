@@ -1,0 +1,10 @@
+.page-count-card .compact-control strong {
+  min-width: 72px !important;
+  white-space: nowrap !important;
+  font-size: 11px !important;
+}
+
+.page-count-card .compact-control strong::after {
+  content: ' ex.';
+  font-size: 11px !important;
+}
