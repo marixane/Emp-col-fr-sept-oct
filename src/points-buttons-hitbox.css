@@ -1,5 +1,9 @@
 .exercise-title {
-  top: 2px !important;
+  top: -9px !important;
+}
+
+.bar-buttons {
+  top: 34px !important;
 }
 
 .exercise-title-controls button::after {
