@@ -213,13 +213,17 @@
   z-index: 1;
 }
 
+.exam-page.has-bar-ribbon .exam-exercise {
+  padding-left: 4px !important;
+}
+
 .exam-page.has-bar-ribbon .exercise-body::before {
   content: '';
   position: absolute;
-  left: -4px;
+  left: -3px;
   top: 0;
   bottom: 0;
-  width: 27px;
+  width: 30px;
   border-left: 2px solid rgba(120, 120, 120, 0.42);
   border-right: 2px solid rgba(120, 120, 120, 0.42);
   background: linear-gradient(to right, rgba(150, 150, 150, 0.03), rgba(150, 150, 150, 0.15), rgba(150, 150, 150, 0.03));
