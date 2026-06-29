@@ -8,14 +8,6 @@ function formatDateValue(value) {
   return parts[2] + '/' + parts[1] + '/' + parts[0];
 }
 
-function updateDateButton() {
-  var button = document.querySelector('.page-date-toggle');
-  if (!button) return;
-  button.classList.toggle('off', !window.__showPageDate);
-  button.classList.toggle('on', window.__showPageDate);
-  button.textContent = window.__showPageDate ? 'Date visible' : 'Date masquée';
-}
-
 function updateDateInput() {
   var input = document.querySelector('.page-date-input');
   if (!input) return;
@@ -25,6 +17,15 @@ function updateDateInput() {
 function syncPageDates() {
   var text = formatDateValue(window.__pageDateValue);
   document.body.classList.toggle('hide-page-date', !window.__showPageDate);
+
+  document.querySelectorAll('.page-date-toggle').forEach(function (oldButton) {
+    oldButton.remove();
+  });
+
+  document.querySelectorAll('.page-date-control').forEach(function (control) {
+    control.classList.toggle('off', !window.__showPageDate);
+    control.classList.toggle('on', window.__showPageDate);
+  });
 
   document.querySelectorAll('.exam-page').forEach(function (page) {
     var date = page.querySelector('.page-date');
@@ -36,7 +37,6 @@ function syncPageDates() {
     date.textContent = text;
   });
 
-  updateDateButton();
   updateDateInput();
 }
 
@@ -44,43 +44,46 @@ function ensureDateControls() {
   var panel = document.querySelector('.panel');
   if (!panel) return;
 
-  if (!document.querySelector('.page-date-toggle')) {
-    var button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'page-date-toggle on';
-    button.textContent = 'Date visible';
-    button.addEventListener('click', function () {
-      window.__showPageDate = !window.__showPageDate;
-      syncPageDates();
-    });
-
-    var barButton = panel.querySelector('.bar-ribbon-toggle');
-    if (barButton && barButton.parentNode) {
-      barButton.parentNode.insertBefore(button, barButton.nextSibling);
-    } else {
-      panel.appendChild(button);
-    }
-  }
+  document.querySelectorAll('.page-date-toggle').forEach(function (oldButton) {
+    oldButton.remove();
+  });
 
   if (!document.querySelector('.page-date-control')) {
     var wrap = document.createElement('label');
-    wrap.className = 'page-date-control';
-    wrap.textContent = 'Choisir date';
+    wrap.className = 'page-date-control on';
+    wrap.title = 'Cliquer sur le cadre pour afficher/masquer la date. Cliquer sur le calendrier pour choisir la date.';
+
+    var title = document.createElement('span');
+    title.className = 'page-date-title';
+    title.textContent = 'Choisir date';
 
     var input = document.createElement('input');
     input.type = 'date';
     input.className = 'page-date-input';
     input.value = window.__pageDateValue;
+    input.addEventListener('click', function (event) {
+      event.stopPropagation();
+      window.__showPageDate = true;
+      syncPageDates();
+    });
     input.addEventListener('change', function () {
       window.__pageDateValue = input.value || new Date().toISOString().slice(0, 10);
+      window.__showPageDate = true;
       syncPageDates();
     });
 
+    wrap.addEventListener('click', function (event) {
+      if (event.target === input) return;
+      window.__showPageDate = !window.__showPageDate;
+      syncPageDates();
+    });
+
+    wrap.appendChild(title);
     wrap.appendChild(input);
 
-    var toggle = document.querySelector('.page-date-toggle');
-    if (toggle && toggle.parentNode) {
-      toggle.parentNode.insertBefore(wrap, toggle.nextSibling);
+    var barButton = panel.querySelector('.bar-ribbon-toggle');
+    if (barButton && barButton.parentNode) {
+      barButton.parentNode.insertBefore(wrap, barButton.nextSibling);
     } else {
       panel.appendChild(wrap);
     }
