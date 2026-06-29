@@ -98,7 +98,7 @@
   align-content: flex-start !important;
   align-items: flex-start !important;
   justify-content: flex-start !important;
-  gap: 34px !important;
+  gap: 28px !important;
   padding: 20px 20px 70px !important;
   overflow: auto !important;
 }
@@ -109,12 +109,14 @@
   margin: 0 !important;
 }
 
-.site-preview-zoom-75 .preview-zone .a4-page:not(.is-exporting) {
-  zoom: 0.75 !important;
+.site-preview-zoom-55 .preview-zone .a4-page:not(.is-exporting) {
+  zoom: 0.55 !important;
+  flex-basis: 437px !important;
 }
 
-.site-preview-zoom-60 .preview-zone .a4-page:not(.is-exporting) {
-  zoom: 0.6 !important;
+.site-preview-zoom-45 .preview-zone .a4-page:not(.is-exporting) {
+  zoom: 0.45 !important;
+  flex-basis: 358px !important;
 }
 
 .exam-page.is-exporting .exercise-body {
