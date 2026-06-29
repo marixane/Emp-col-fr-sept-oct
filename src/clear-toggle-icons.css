@@ -1,0 +1,35 @@
+.pdf-lines-toggle,
+.bar-ribbon-toggle {
+  padding-left: 78px !important;
+}
+
+.pdf-lines-toggle::before,
+.bar-ribbon-toggle::before {
+  left: 8px !important;
+  top: 6px !important;
+  width: 58px !important;
+  height: 38px !important;
+  border: 2px solid #6b7280 !important;
+  border-radius: 6px !important;
+  background-color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.pdf-lines-toggle::after,
+.bar-ribbon-toggle::after {
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+.pdf-lines-toggle::before {
+  background:
+    linear-gradient(to bottom, transparent 0 7px, #7a7a7a 7px 9px, transparent 9px 15px, #7a7a7a 15px 17px, transparent 17px 23px, #7a7a7a 23px 25px, transparent 25px 31px, #7a7a7a 31px 33px, transparent 33px),
+    #ffffff !important;
+}
+
+.bar-ribbon-toggle::before {
+  background:
+    linear-gradient(to right, #111111 0 9px, #f3f4f6 9px 42px, #8b8b8b 42px 50px, transparent 50px),
+    linear-gradient(to bottom, transparent 0 7px, #555555 7px 9px, transparent 9px 18px, #555555 18px 20px, transparent 20px 29px, #555555 29px 31px, transparent 31px),
+    #ffffff !important;
+}
