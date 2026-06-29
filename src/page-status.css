@@ -23,6 +23,11 @@
   background: #e2e8f0 !important;
 }
 
+.panel h1,
+.panel .intro {
+  display: none !important;
+}
+
 .total-mode-control {
   width: 100%;
   min-height: 38px;
