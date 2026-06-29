@@ -23,10 +23,10 @@ body.arabic-mode .exam-page.has-bar-ribbon .exercise-body::before {
   left: auto !important;
   right: -4mm !important;
   width: 33px !important;
-  background: #eeeeee !important;
+  background: linear-gradient(to right, #eeeeee 0, #eeeeee calc(100% - 4px), #111111 calc(100% - 4px), #111111 100%) !important;
   border-left: 2px solid #9a9a9a !important;
   border-right: 0 !important;
-  box-shadow: inset -3px 0 0 #111111 !important;
+  box-shadow: none !important;
   z-index: 46 !important;
 }
 
