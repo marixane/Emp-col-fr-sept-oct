@@ -216,10 +216,10 @@
 .exam-page.has-bar-ribbon .exercise-body::before {
   content: '';
   position: absolute;
-  left: 20px;
+  left: 1px;
   top: 0;
   bottom: 0;
-  width: 26px;
+  width: 27px;
   border-left: 2px solid rgba(120, 120, 120, 0.42);
   border-right: 2px solid rgba(120, 120, 120, 0.42);
   background: linear-gradient(to right, rgba(150, 150, 150, 0.03), rgba(150, 150, 150, 0.15), rgba(150, 150, 150, 0.03));
