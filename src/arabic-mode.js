@@ -37,6 +37,23 @@ function syncHeaderLanguage() {
   setInputValue('.right-line-bottom', header.rightBottom);
 }
 
+function formatArabicDurationText() {
+  var node = document.querySelector('.tiny-duration-control strong');
+  if (!node) return;
+  var text = node.textContent || '';
+  if (window.__examLanguage !== 'ar') return;
+  var next = text
+    .replace(/1 h 30/g, '1 س 30 د')
+    .replace(/2 h 30/g, '2 س 30 د')
+    .replace(/3 h 30/g, '3 س 30 د')
+    .replace(/1 h/g, '1 س')
+    .replace(/2 h/g, '2 س')
+    .replace(/3 h/g, '3 س')
+    .replace(/4 h/g, '4 س')
+    .replace(/30 min/g, '30 د');
+  if (node.textContent !== next) node.textContent = next;
+}
+
 function syncLanguageButton() {
   var panel = document.querySelector('.panel');
   if (!panel) return;
@@ -78,6 +95,7 @@ function syncLanguageMode() {
   syncLanguageButton();
   syncHeaderLanguage();
   syncExerciseTitles();
+  formatArabicDurationText();
   if (typeof formatExercisePointLabels === 'function') formatExercisePointLabels();
 }
 
@@ -88,4 +106,5 @@ setTimeout(syncLanguageMode, 400);
 new MutationObserver(function () {
   syncLanguageButton();
   syncExerciseTitles();
+  formatArabicDurationText();
 }).observe(document.body, { childList: true, subtree: true });
