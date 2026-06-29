@@ -60,3 +60,9 @@ body.arabic-mode .exam-page .exercise-title {
   left: auto !important;
   right: 12px !important;
 }
+
+body.arabic-mode .photo-overlay-tools {
+  right: auto !important;
+  left: 8px !important;
+  justify-content: start !important;
+}
