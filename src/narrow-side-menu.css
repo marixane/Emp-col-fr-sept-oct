@@ -1,0 +1,46 @@
+.app-shell {
+  grid-template-columns: 150px 1fr !important;
+  gap: 14px !important;
+}
+
+.panel {
+  width: 150px !important;
+  min-width: 150px !important;
+  max-width: 150px !important;
+  padding-left: 7px !important;
+  padding-right: 7px !important;
+}
+
+.assignment-control button {
+  font-size: 11px !important;
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+}
+
+.page-count-card {
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+}
+
+.page-count-card .compact-control {
+  grid-template-columns: 21px 1fr 21px !important;
+  gap: 3px !important;
+}
+
+.page-count-card .compact-control button {
+  width: 21px !important;
+}
+
+.page-count-card .compact-control strong {
+  min-width: 54px !important;
+  font-size: 10.5px !important;
+}
+
+.page-count-card .compact-control strong::after {
+  font-size: 10.5px !important;
+}
+
+.pdf-lines-toggle,
+.bar-ribbon-toggle {
+  width: 70px !important;
+}
