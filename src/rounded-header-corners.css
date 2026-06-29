@@ -4,12 +4,28 @@
 }
 
 .exam-header.three-cell-header {
-  height: 72px !important;
+  height: 68px !important;
 }
 
 .exam-header .header-cell {
-  padding-top: 4px !important;
-  padding-bottom: 3px !important;
+  padding-top: 3px !important;
+  padding-bottom: 1px !important;
+}
+
+.split-title-cell,
+.split-right-cell {
+  gap: 0.8mm !important;
+}
+
+.split-title-cell .title-line,
+.split-right-cell .right-line {
+  min-height: 25px !important;
+  height: 25px !important;
+  line-height: 25px !important;
+}
+
+.tiny-duration-control {
+  margin-top: 1px !important;
 }
 
 .exam-header .header-cell:first-child {
