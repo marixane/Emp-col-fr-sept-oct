@@ -173,6 +173,27 @@ body,
   font-weight: 900;
 }
 
+.photo-overlay-tools {
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+
+.photo-zoom-control {
+  min-width: 320px !important;
+  padding: 8px 10px !important;
+}
+
+.photo-zoom-control input[type="range"] {
+  width: 220px !important;
+  height: 18px !important;
+}
+
+.photo-zoom-control span {
+  min-width: 42px;
+  text-align: right;
+  font-weight: 800;
+}
+
 .white-mask {
   position: absolute;
   background: #fff;
