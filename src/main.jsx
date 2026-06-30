@@ -50,6 +50,7 @@ import './homework-exercise-title-fix.css';
 import './bar-ribbon-label.css';
 import './arabic-mode.css';
 import './arabic-mode.js';
+import './arabic-menu-word-replace.js';
 import './a4-overview.js';
 
 createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
