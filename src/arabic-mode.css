@@ -82,10 +82,10 @@ body.arabic-mode .exam-page .exercise-title {
 
 body.arabic-mode .resize-handle {
   left: auto !important;
-  right: 25% !important;
-  width: 75% !important;
+  right: 40% !important;
+  width: 60% !important;
   height: 14px !important;
-  transform: translateY(-50%) scaleX(-1) !important;
+  transform: translateY(calc(-50% + 3mm)) scaleX(-1) !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
