@@ -353,7 +353,7 @@ button:disabled {
 
 .exercise-list {
   display: grid;
-  gap: 2px;
+  gap: 4px;
   height: 1006px;
   overflow: hidden;
   padding-top: 4px;
