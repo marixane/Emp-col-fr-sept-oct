@@ -115,15 +115,15 @@ body.arabic-mode .exercise-title-controls > span:first-child {
   white-space: nowrap !important;
 }
 
-body.arabic-mode .exercise-title-controls > span.points-decoration:nth-of-type(2) {
+body.arabic-mode .exercise-title-controls > button:first-of-type {
   order: 2 !important;
   margin: 0 !important;
-  white-space: nowrap !important;
 }
 
-body.arabic-mode .exercise-title-controls > button:first-of-type {
+body.arabic-mode .exercise-title-controls > span.points-decoration:nth-of-type(2) {
   order: 3 !important;
   margin: 0 !important;
+  white-space: nowrap !important;
 }
 
 body.arabic-mode .exercise-title-controls > strong {
@@ -132,15 +132,15 @@ body.arabic-mode .exercise-title-controls > strong {
   white-space: nowrap !important;
 }
 
-body.arabic-mode .exercise-title-controls > button:last-of-type {
+body.arabic-mode .exercise-title-controls > span.points-decoration:nth-of-type(3) {
   order: 5 !important;
   margin: 0 !important;
+  white-space: nowrap !important;
 }
 
-body.arabic-mode .exercise-title-controls > span.points-decoration:nth-of-type(3) {
+body.arabic-mode .exercise-title-controls > button:last-of-type {
   order: 6 !important;
   margin: 0 !important;
-  white-space: nowrap !important;
 }
 
 body.arabic-mode .photo-overlay-tools {
