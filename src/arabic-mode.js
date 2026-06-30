@@ -147,6 +147,16 @@ function syncNotesLabel() {
   if (notesTitle.textContent !== next) notesTitle.textContent = next;
 }
 
+function syncPageNumberLabels() {
+  document.querySelectorAll('.page-number').forEach(function (node) {
+    var text = node.textContent || '';
+    var match = text.match(/(?:Page|الصفحة)\s*(\d+)\s*\/\s*(\d+)/);
+    if (!match) return;
+    var next = window.__examLanguage === 'ar' ? 'الصفحة ' + match[1] + '/' + match[2] : 'Page ' + match[1] + '/' + match[2];
+    if (node.textContent !== next) node.textContent = next;
+  });
+}
+
 function syncDurationLabels() {
   document.querySelectorAll('.tiny-duration-control strong').forEach(function (duration) {
     var text = (duration.textContent || '').trim();
@@ -189,6 +199,7 @@ function syncLanguageMode() {
   document.documentElement.setAttribute('dir', 'ltr');
   syncLanguageButton();
   syncNotesLabel();
+  syncPageNumberLabels();
   syncHeaderLanguage();
   bindDurationButtons();
   scheduleDurationSync();
@@ -203,6 +214,7 @@ setTimeout(syncLanguageMode, 400);
 new MutationObserver(function () {
   syncLanguageButton();
   syncNotesLabel();
+  syncPageNumberLabels();
   syncHeaderLanguage();
   bindDurationButtons();
   scheduleDurationSync();
