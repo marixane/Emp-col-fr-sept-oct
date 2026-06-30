@@ -45,6 +45,12 @@ body.arabic-mode .exam-page::after {
   transform-origin: center center !important;
 }
 
+body.arabic-mode .exam-page.is-exporting .right-line-top,
+body.arabic-mode .exam-page.is-exporting .title-line-top,
+body.arabic-mode .exam-page.is-exporting .inline-class-input {
+  transform: translateY(2mm) !important;
+}
+
 body.arabic-mode .exam-page.has-bar-ribbon .exercise-body::before {
   left: auto !important;
   right: -6px !important;
