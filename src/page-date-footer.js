@@ -17,7 +17,7 @@ function updateDateInput() {
 function syncDateLabel() {
   var title = document.querySelector('.page-date-title');
   if (!title) return;
-  var next = window.__examLanguage === 'ar' ? 'التاريخ :' : 'Date :';
+  var next = window.__examLanguage === 'ar' ? ': التاريخ' : 'Date :';
   if (title.textContent !== next) title.textContent = next;
 }
 
@@ -73,7 +73,7 @@ function ensureDateControls() {
 
     var title = document.createElement('span');
     title.className = 'page-date-title';
-    title.textContent = window.__examLanguage === 'ar' ? 'التاريخ :' : 'Date :';
+    title.textContent = window.__examLanguage === 'ar' ? ': التاريخ' : 'Date :';
 
     var input = document.createElement('input');
     input.type = 'date';
