@@ -1,0 +1,15 @@
+body.no-title-points .exercise-title-controls > .points-decoration,
+body.no-title-points .exercise-title-controls > strong,
+body.no-title-points .exercise-title-controls > button {
+  display: none !important;
+}
+
+body.no-title-points .exercise-title-controls {
+  gap: 0 !important;
+}
+
+body.no-title-points .individual-toggle {
+  background: #ecfdf5 !important;
+  border-color: #86efac !important;
+  color: #065f46 !important;
+}
