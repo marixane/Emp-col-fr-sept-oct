@@ -33,19 +33,22 @@ function getSteppedScale(rawScale) {
   if (rawScale >= 0.76) return 0.78;
   if (rawScale >= 0.70) return 0.72;
   if (rawScale >= 0.64) return 0.66;
-  return 0.60;
+  if (rawScale >= 0.58) return 0.60;
+  if (rawScale >= 0.52) return 0.54;
+  return 0.48;
 }
 
-function updateTwoPageZoom(enabled) {
-  document.documentElement.style.removeProperty('--two-page-scale');
-  if (!enabled) return;
-
+function updateSheetZoom(twoPageEnabled) {
   const panel = document.querySelector('.panel');
-  const panelWidth = (panel && panel.getBoundingClientRect().width) || 190;
-  const available = Math.max(520, window.innerWidth - panelWidth - 34);
-  const natural = 794 * 2 + 16;
+  const panelWidth = (panel && panel.getBoundingClientRect().width) || 180;
+  const gap = twoPageEnabled ? 10 : 6;
+  const available = Math.max(260, window.innerWidth - panelWidth - gap - 18);
+  const natural = twoPageEnabled ? 794 * 2 + 16 : 794;
   const scale = getSteppedScale(Math.min(1, available / natural));
-  document.documentElement.style.setProperty('--two-page-scale', String(scale));
+
+  document.documentElement.style.setProperty('--sheet-scale', String(scale));
+  document.documentElement.style.setProperty('--sheet-columns', twoPageEnabled ? '2' : '1');
+  document.body.classList.toggle('sheet-zoom-active', scale < 0.999);
 }
 
 function syncTwoPageView() {
@@ -53,7 +56,7 @@ function syncTwoPageView() {
   autoEnableWhenSecondPageAppears(multiple);
   const enabled = isTwoPageViewEnabled() && multiple;
   document.body.classList.toggle('two-page-view', enabled);
-  updateTwoPageZoom(enabled);
+  updateSheetZoom(enabled);
 
   const button = document.querySelector('.two-page-view-toggle');
   if (!button) return;
