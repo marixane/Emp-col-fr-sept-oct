@@ -1,5 +1,6 @@
 const BAR_MARK_MIN_GAP = 24;
 const BAR_MARK_MIN_X_GAP = 46;
+let barMarkSpacingTimer = null;
 
 function numberValue(node) {
   const value = parseFloat(String(node.style.top || '').replace('px', ''));
@@ -17,8 +18,12 @@ function keepBarMarksSeparated() {
     if (marks.length < 2) return;
 
     const sorted = marks
-      .map(function (node) { return { node: node, top: numberValue(node), left: xValue(node) }; })
-      .sort(function (a, b) { return a.top - b.top || a.left - b.left; });
+      .map(function (node, index) { return { node: node, index: index, top: numberValue(node), left: xValue(node) }; })
+      .sort(function (a, b) { return a.top - b.top || a.index - b.index; });
+
+    sorted.forEach(function (item, order) {
+      item.node.style.zIndex = String(80 + order);
+    });
 
     for (let i = 1; i < sorted.length; i += 1) {
       const previous = sorted[i - 1];
@@ -27,27 +32,27 @@ function keepBarMarksSeparated() {
       const closeHorizontally = Math.abs(current.left - previous.left) < BAR_MARK_MIN_X_GAP;
 
       if (closeVertically && closeHorizontally) {
-        const nextTop = previous.top + BAR_MARK_MIN_GAP;
-        current.top = nextTop;
-        current.node.style.top = nextTop + 'px';
+        current.top = previous.top + BAR_MARK_MIN_GAP;
+        current.node.style.top = current.top + 'px';
       }
     }
   });
 }
 
-window.addEventListener('mousemove', function () {
-  window.requestAnimationFrame(keepBarMarksSeparated);
-});
+function scheduleBarMarkSpacing(delay) {
+  clearTimeout(barMarkSpacingTimer);
+  barMarkSpacingTimer = setTimeout(keepBarMarksSeparated, delay || 0);
+}
 
 window.addEventListener('mouseup', function () {
-  setTimeout(keepBarMarksSeparated, 0);
-  setTimeout(keepBarMarksSeparated, 80);
+  scheduleBarMarkSpacing(40);
 });
 
-document.addEventListener('click', function () {
-  setTimeout(keepBarMarksSeparated, 0);
-  setTimeout(keepBarMarksSeparated, 80);
+document.addEventListener('click', function (event) {
+  if (event.target && event.target.closest && (event.target.closest('.bar-mark') || event.target.closest('.bar-buttons'))) {
+    scheduleBarMarkSpacing(60);
+  }
 });
 
-setInterval(keepBarMarksSeparated, 300);
 window.keepBarMarksSeparated = keepBarMarksSeparated;
+window.scheduleBarMarkSpacing = scheduleBarMarkSpacing;
