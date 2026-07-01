@@ -91,6 +91,7 @@ body .app-shell {
   align-items: flex-start !important;
   gap: 6px !important;
   overflow: visible !important;
+  padding-top: 6px !important;
 }
 
 body .panel {
@@ -115,10 +116,15 @@ body .preview-zone {
   grid-auto-rows: var(--sheet-page-h) !important;
   column-gap: var(--sheet-gap) !important;
   row-gap: 28px !important;
+  align-content: start !important;
+  align-items: start !important;
+  justify-content: start !important;
+  justify-items: start !important;
   width: calc(var(--sheet-page-w) * var(--sheet-columns) + var(--sheet-gap) * (var(--sheet-columns) - 1) + 8px) !important;
   min-width: calc(var(--sheet-page-w) * var(--sheet-columns) + var(--sheet-gap) * (var(--sheet-columns) - 1) + 8px) !important;
   max-width: none !important;
   height: auto !important;
+  min-height: var(--sheet-page-h) !important;
   overflow: visible !important;
   padding: 0 0 0 8px !important;
   margin: 0 !important;
@@ -134,8 +140,10 @@ body .a4-page {
   height: 1123px !important;
   margin: 0 !important;
   transform: scale(var(--sheet-scale)) !important;
-  transform-origin: top left !important;
+  transform-origin: 0 0 !important;
   translate: 0 0 !important;
+  align-self: start !important;
+  justify-self: start !important;
 }
 
 body .preview-zone .a4-page:last-child,
@@ -159,6 +167,7 @@ body.two-page-view {
   body .app-shell {
     gap: 4px !important;
     padding-left: 4px !important;
+    padding-top: 6px !important;
   }
 
   body .panel {
@@ -170,6 +179,8 @@ body.two-page-view {
 
   body .preview-zone {
     padding-left: 4px !important;
+    align-content: start !important;
+    align-items: start !important;
   }
 }
 
