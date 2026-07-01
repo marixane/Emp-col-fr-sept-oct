@@ -25,11 +25,34 @@ function autoEnableWhenSecondPageAppears(multiple) {
   lastMultiplePageState = multiple;
 }
 
+function getTwoPageZoomClass(scale) {
+  if (scale >= 0.98) return 'two-page-zoom-100';
+  if (scale >= 0.92) return 'two-page-zoom-95';
+  if (scale >= 0.86) return 'two-page-zoom-90';
+  if (scale >= 0.80) return 'two-page-zoom-84';
+  if (scale >= 0.74) return 'two-page-zoom-78';
+  if (scale >= 0.68) return 'two-page-zoom-72';
+  if (scale >= 0.62) return 'two-page-zoom-66';
+  return 'two-page-zoom-60';
+}
+
+function updateTwoPageZoom(enabled) {
+  document.body.classList.remove('two-page-zoom-100', 'two-page-zoom-95', 'two-page-zoom-90', 'two-page-zoom-84', 'two-page-zoom-78', 'two-page-zoom-72', 'two-page-zoom-66', 'two-page-zoom-60');
+  if (!enabled) return;
+
+  const panel = document.querySelector('.panel');
+  const available = Math.max(720, window.innerWidth - ((panel && panel.offsetWidth) || 190) - 42);
+  const natural = 794 * 2 + 16;
+  const scale = Math.min(1, Math.max(0.60, available / natural));
+  document.body.classList.add(getTwoPageZoomClass(scale));
+}
+
 function syncTwoPageView() {
   const multiple = hasMultiplePages();
   autoEnableWhenSecondPageAppears(multiple);
   const enabled = isTwoPageViewEnabled() && multiple;
   document.body.classList.toggle('two-page-view', enabled);
+  updateTwoPageZoom(enabled);
 
   const button = document.querySelector('.two-page-view-toggle');
   if (!button) return;
@@ -70,5 +93,6 @@ initTwoPageView();
 setTimeout(initTwoPageView, 200);
 setTimeout(initTwoPageView, 700);
 setInterval(initTwoPageView, 500);
+window.addEventListener('resize', syncTwoPageView);
 
 window.syncTwoPageView = syncTwoPageView;
