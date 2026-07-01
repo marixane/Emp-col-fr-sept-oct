@@ -33,6 +33,7 @@ import './page-date-footer.css';
 import './page-date-footer-setting.js';
 // import './page-date-footer.js';
 import './note-scale-buttons.css';
+import './note-scale-short-labels.js';
 // import './note-scale-button-labels.js';
 // import './note-counter-pts.js';
 import './hide-single-page-number.css';
