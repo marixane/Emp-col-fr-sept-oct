@@ -1,4 +1,5 @@
 var previousTitleMode = null;
+var activateBarOnceOnIndividualClick = false;
 
 function getTitleModeValue() {
   var title = document.querySelector('.title-line-top');
@@ -23,6 +24,13 @@ function isIndividualModeActive() {
   return getTitleModeKind() === 'individual';
 }
 
+function isIndividualButton(node) {
+  var button = node && node.closest && node.closest('button');
+  if (!button) return false;
+  var text = (button.textContent || '').replace(/\s+/g, ' ').trim();
+  return text === 'Individuel' || text === 'Devoir individuel' || text === 'فرض محروس';
+}
+
 function updateDisplay(node, hidden) {
   if (!node) return;
   if (hidden) node.style.display = 'none';
@@ -39,14 +47,17 @@ function syncFreeModeBarRibbon(freeMode) {
   if (!button) return;
 
   var currentMode = getTitleModeKind();
+  var shouldActivateOnce = currentMode === 'individual' && (activateBarOnceOnIndividualClick || previousTitleMode === 'free');
 
   if (freeMode && button.classList.contains('on')) {
     button.click();
   }
 
-  if (currentMode === 'individual' && previousTitleMode === 'free' && button.classList.contains('off')) {
+  if (shouldActivateOnce && button.classList.contains('off')) {
     button.click();
   }
+
+  if (currentMode === 'individual') activateBarOnceOnIndividualClick = false;
 
   button.disabled = !!freeMode;
   button.setAttribute('aria-disabled', freeMode ? 'true' : 'false');
@@ -87,7 +98,8 @@ setTimeout(syncFreeModeClean, 700);
 
 window.setInterval(syncFreeModeClean, 400);
 
-document.addEventListener('click', function () {
+document.addEventListener('click', function (event) {
+  if (isIndividualButton(event.target)) activateBarOnceOnIndividualClick = true;
   setTimeout(syncFreeModeClean, 20);
   setTimeout(syncFreeModeClean, 80);
   setTimeout(syncFreeModeClean, 250);
