@@ -9,6 +9,18 @@ function todayText() {
   return dd + '/' + mm + '/' + yyyy;
 }
 
+function textToDateInputValue(value) {
+  const match = String(value || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (!match) return '';
+  return match[3] + '-' + match[2] + '-' + match[1];
+}
+
+function dateInputValueToText(value) {
+  const match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return value || '';
+  return match[3] + '/' + match[2] + '/' + match[1];
+}
+
 function getDateValue() {
   return localStorage.getItem(DATE_STORAGE_KEY) || todayText();
 }
@@ -66,15 +78,18 @@ function ensureDateControl() {
 
   const input = document.createElement('input');
   input.className = 'page-date-input';
-  input.type = 'text';
-  input.value = getDateValue();
-  input.placeholder = 'jj/mm/aaaa';
+  input.type = 'date';
+  input.value = textToDateInputValue(getDateValue()) || textToDateInputValue(todayText());
   input.addEventListener('click', function (event) {
     event.stopPropagation();
     if (!isDateVisible()) setDateVisible(true);
+    if (typeof input.showPicker === 'function') input.showPicker();
   });
   input.addEventListener('input', function () {
-    setDateValue(input.value);
+    setDateValue(dateInputValueToText(input.value));
+  });
+  input.addEventListener('change', function () {
+    setDateValue(dateInputValueToText(input.value));
   });
 
   control.appendChild(title);
