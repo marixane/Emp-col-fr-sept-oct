@@ -47,8 +47,6 @@ function updateDateControlState() {
   const visible = isDateVisible();
   control.classList.toggle('on', visible);
   control.classList.toggle('off', !visible);
-  const button = control.querySelector('.page-date-toggle-button');
-  if (button) button.textContent = visible ? 'Date visible' : 'Date masquée';
 }
 
 function ensureDateControl() {
@@ -57,30 +55,30 @@ function ensureDateControl() {
 
   const control = document.createElement('div');
   control.className = 'page-date-control';
+  control.addEventListener('click', function (event) {
+    if (event.target && event.target.classList && event.target.classList.contains('page-date-input')) return;
+    setDateVisible(!isDateVisible());
+  });
 
   const title = document.createElement('span');
   title.className = 'page-date-title';
-  title.textContent = 'Date bas de page';
+  title.textContent = 'Date :';
 
   const input = document.createElement('input');
   input.className = 'page-date-input';
   input.type = 'text';
   input.value = getDateValue();
   input.placeholder = 'jj/mm/aaaa';
+  input.addEventListener('click', function (event) {
+    event.stopPropagation();
+    if (!isDateVisible()) setDateVisible(true);
+  });
   input.addEventListener('input', function () {
     setDateValue(input.value);
   });
 
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'page-date-toggle-button';
-  button.addEventListener('click', function () {
-    setDateVisible(!isDateVisible());
-  });
-
   control.appendChild(title);
   control.appendChild(input);
-  control.appendChild(button);
 
   const after = panel.querySelector('.form-group');
   if (after && after.nextSibling) panel.insertBefore(control, after.nextSibling);
