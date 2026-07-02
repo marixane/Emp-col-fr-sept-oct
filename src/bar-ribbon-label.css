@@ -22,3 +22,10 @@
 .exam-page.is-exporting.has-bar-ribbon .exam-exercise:first-child .exercise-body::after {
   font-size: 7px !important;
 }
+
+@media (max-width: 768px) {
+  .exam-page.has-bar-ribbon .exam-exercise:first-child .exercise-body::after {
+    display: none !important;
+    content: none !important;
+  }
+}
