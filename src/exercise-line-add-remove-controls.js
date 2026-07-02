@@ -26,12 +26,12 @@ function ensureExerciseLineControlStyle() {
   if (document.getElementById('exercise-line-add-remove-style')) return;
   var style = document.createElement('style');
   style.id = 'exercise-line-add-remove-style';
-  style.textContent = '.exercise-line-count-controls{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;margin-left:10px!important;vertical-align:middle!important;pointer-events:auto!important;z-index:999!important}.exercise-line-count-controls button{width:20px!important;min-width:20px!important;height:20px!important;min-height:20px!important;border-radius:50%!important;border:1px solid #64748b!important;background:#ffffff!important;color:#0f172a!important;font-size:14px!important;font-weight:900!important;line-height:1!important;padding:0!important;margin:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;box-sizing:border-box!important;box-shadow:0 1px 3px rgba(15,23,42,.18)!important}.exercise-line-count-controls button:hover{background:#e0f2fe!important;border-color:#2563eb!important;color:#1d4ed8!important}.exercise-line-count-controls button.minus:hover{background:#fee2e2!important;border-color:#dc2626!important;color:#b91c1c!important}.exercise-line-count-controls button:disabled{opacity:.35!important;cursor:not-allowed!important}@media(max-width:1200px){.exercise-line-count-controls{gap:3px!important;margin-left:6px!important}.exercise-line-count-controls button{width:18px!important;min-width:18px!important;height:18px!important;min-height:18px!important;font-size:13px!important}}@media print{.exercise-line-count-controls{display:none!important}}';
+  style.textContent = '.exercise-line-count-controls{position:absolute!important;left:50%!important;top:26px!important;transform:translateX(-50%)!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:18px!important;pointer-events:auto!important;z-index:999!important}.exercise-line-count-controls button{width:22px!important;min-width:22px!important;height:22px!important;min-height:22px!important;border-radius:50%!important;border:1px solid #64748b!important;background:#ffffff!important;color:#0f172a!important;font-size:15px!important;font-weight:900!important;line-height:1!important;padding:0!important;margin:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;box-sizing:border-box!important;box-shadow:0 1px 3px rgba(15,23,42,.18)!important}.exercise-line-count-controls button:hover{background:#e0f2fe!important;border-color:#2563eb!important;color:#1d4ed8!important}.exercise-line-count-controls button.minus:hover{background:#fee2e2!important;border-color:#dc2626!important;color:#b91c1c!important}.exercise-line-count-controls button:disabled{opacity:.35!important;cursor:not-allowed!important}@media(max-width:1200px){.exercise-line-count-controls{top:23px!important;gap:14px!important}.exercise-line-count-controls button{width:19px!important;min-width:19px!important;height:19px!important;min-height:19px!important;font-size:13px!important}}@media print{.exercise-line-count-controls{display:none!important}}';
   document.head.appendChild(style);
 }
 
 function makeExerciseLineControls(pageIndex) {
-  var controls = document.createElement('span');
+  var controls = document.createElement('div');
   controls.className = 'exercise-line-count-controls';
 
   var minus = document.createElement('button');
@@ -77,6 +77,8 @@ function syncExerciseLineControls() {
     var lastExercise = exercises[exercises.length - 1];
     var title = lastExercise.querySelector('.exercise-title');
     if (!title) return;
+
+    if (getComputedStyle(title).position === 'static') title.style.position = 'relative';
 
     var controls = makeExerciseLineControls(pageIndex);
     var count = getVisibleExerciseCount(pageIndex);
