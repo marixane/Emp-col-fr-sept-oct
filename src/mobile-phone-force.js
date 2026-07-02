@@ -1,16 +1,14 @@
 function applyMobilePhoneForce() {
-  if (document.getElementById('mobile-phone-force-style')) return;
+  var existing = document.getElementById('mobile-phone-force-style');
+  if (existing) existing.remove();
 
-  const style = document.createElement('style');
+  var style = document.createElement('style');
   style.id = 'mobile-phone-force-style';
   style.textContent = `
-    @media (max-width: 768px) {
-      html,
-      body,
-      #root {
+    @media (max-width: 1200px) {
+      html, body, #root {
         width: 100% !important;
         height: 100% !important;
-        min-width: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
         overflow: hidden !important;
@@ -18,10 +16,6 @@ function applyMobilePhoneForce() {
 
       .education-top-navbar {
         display: none !important;
-        height: 0 !important;
-        min-height: 0 !important;
-        max-height: 0 !important;
-        overflow: hidden !important;
       }
 
       .app-shell {
@@ -48,9 +42,6 @@ function applyMobilePhoneForce() {
         height: 100vh !important;
         min-height: 100vh !important;
         max-height: 100vh !important;
-        position: relative !important;
-        left: auto !important;
-        top: auto !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
@@ -65,6 +56,9 @@ function applyMobilePhoneForce() {
         border-right: 1px solid #cbd5e1 !important;
         background: #ffffff !important;
         box-shadow: none !important;
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
       }
 
       .panel h1,
@@ -200,7 +194,6 @@ function applyMobilePhoneForce() {
       }
     }
   `;
-
   document.head.appendChild(style);
 }
 
