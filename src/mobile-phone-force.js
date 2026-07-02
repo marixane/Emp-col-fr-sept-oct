@@ -2,6 +2,10 @@ function applyMobilePhoneForce() {
   var existing = document.getElementById('mobile-phone-force-style');
   if (existing) existing.remove();
 
+  var viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+  var mobileScale = Math.min(1, Math.max(0.32, viewportWidth / 794));
+  var mobileA4Gap = -Math.max(0, Math.round(1123 * (1 - mobileScale) - 40));
+
   var style = document.createElement('style');
   style.id = 'mobile-phone-force-style';
   style.textContent = `
@@ -203,24 +207,11 @@ function applyMobilePhoneForce() {
 
       body .preview-zone .a4-page,
       body .a4-page {
-        transform: scale(0.72) !important;
+        transform: scale(${mobileScale}) !important;
         transform-origin: top left !important;
-        margin: 0 0 -315px 0 !important;
+        margin: 0 0 ${mobileA4Gap}px 0 !important;
         flex: 0 0 auto !important;
         translate: 0 0 !important;
-      }
-
-      body .preview-zone .a4-page:last-child,
-      body .a4-page:last-child {
-        margin-bottom: 40px !important;
-      }
-    }
-
-    @media (max-width: 430px) {
-      body .preview-zone .a4-page,
-      body .a4-page {
-        transform: scale(0.54) !important;
-        margin-bottom: -515px !important;
       }
 
       body .preview-zone .a4-page:last-child,
@@ -236,3 +227,7 @@ applyMobilePhoneForce();
 setTimeout(applyMobilePhoneForce, 100);
 setTimeout(applyMobilePhoneForce, 500);
 setTimeout(applyMobilePhoneForce, 1000);
+window.addEventListener('resize', applyMobilePhoneForce);
+window.addEventListener('orientationchange', function () {
+  setTimeout(applyMobilePhoneForce, 80);
+});
