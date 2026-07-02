@@ -21,10 +21,10 @@
 
   .panel {
     display: flex !important;
-    flex: 0 0 42px !important;
-    width: 42px !important;
-    min-width: 42px !important;
-    max-width: 42px !important;
+    flex: 0 0 20vw !important;
+    width: 20vw !important;
+    min-width: 20vw !important;
+    max-width: 20vw !important;
     height: 100vh !important;
     max-height: 100vh !important;
     position: sticky !important;
@@ -223,9 +223,9 @@
   }
 
   .preview-zone {
-    flex: 1 1 auto !important;
-    width: calc(100vw - 42px) !important;
-    max-width: calc(100vw - 42px) !important;
+    flex: 0 0 80vw !important;
+    width: 80vw !important;
+    max-width: 80vw !important;
     min-width: 0 !important;
     height: 100vh !important;
     max-height: 100vh !important;
