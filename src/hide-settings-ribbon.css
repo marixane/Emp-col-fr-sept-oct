@@ -1,5 +1,13 @@
 .panel {
-  display: none !important;
+  position: fixed !important;
+  left: -10000px !important;
+  top: 0 !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  display: block !important;
 }
 
 .app-shell {
@@ -23,5 +31,6 @@
 .a4-page .preview-pdf-button,
 .a4-page .export-pdf-button,
 .a4-page .two-page-view-toggle {
+  opacity: 1 !important;
   pointer-events: auto !important;
 }
