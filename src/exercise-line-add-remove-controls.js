@@ -9,6 +9,15 @@ function getVisibleExerciseCount(pageIndex) {
   return match ? Number(match[0]) : 0;
 }
 
+function refreshExerciseControlsSoon() {
+  if (window.requestAnimationFrame) window.requestAnimationFrame(syncExerciseLineControls);
+  setTimeout(syncExerciseLineControls, 0);
+  setTimeout(syncExerciseLineControls, 30);
+  setTimeout(syncExerciseLineControls, 80);
+  setTimeout(syncExerciseLineControls, 150);
+  setTimeout(syncExerciseLineControls, 300);
+}
+
 function clickExerciseCountButton(pageIndex, wanted) {
   var card = getPageCards()[pageIndex];
   if (!card) return false;
@@ -19,6 +28,7 @@ function clickExerciseCountButton(pageIndex, wanted) {
   });
   if (!button) return false;
   button.click();
+  refreshExerciseControlsSoon();
   return true;
 }
 
@@ -91,9 +101,18 @@ function syncExerciseLineControls() {
   });
 }
 
+function observeExerciseChanges() {
+  if (window.exerciseLineControlsObserver || !document.body || !window.MutationObserver) return;
+  window.exerciseLineControlsObserver = new MutationObserver(function () {
+    refreshExerciseControlsSoon();
+  });
+  window.exerciseLineControlsObserver.observe(document.body, { childList: true, subtree: true });
+}
+
 syncExerciseLineControls();
-setTimeout(syncExerciseLineControls, 200);
+observeExerciseChanges();
+setTimeout(syncExerciseLineControls, 100);
+setTimeout(syncExerciseLineControls, 250);
 setTimeout(syncExerciseLineControls, 700);
-setTimeout(syncExerciseLineControls, 1200);
-setInterval(syncExerciseLineControls, 500);
+setInterval(syncExerciseLineControls, 300);
 window.addEventListener('resize', syncExerciseLineControls);
