@@ -79,5 +79,6 @@ import './mobile-phone-settings.css';
 import './arabic-no-mirror.css';
 import './mobile-phone-force.js';
 import './mobile-touch-drag.js';
+import './mobile-exercice-touch-zone.css';
 
 createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
