@@ -74,22 +74,22 @@ function syncExerciseLineControls() {
   document.querySelectorAll('.a4-page').forEach(function (pageNode, pageIndex) {
     pageNode.querySelectorAll('.exercise-line-count-controls').forEach(function (old) { old.remove(); });
 
-    var exercises = Array.from(pageNode.querySelectorAll('.exam-exercise')).filter(function (exercise) {
+    var allExercises = Array.from(pageNode.querySelectorAll('.exam-exercise'));
+    var visibleExercises = allExercises.filter(function (exercise) {
       return !exercise.classList.contains('blank-exercise');
     });
-    if (!exercises.length) return;
+    var target = visibleExercises[visibleExercises.length - 1] || allExercises[0] || pageNode;
 
-    var lastExercise = exercises[exercises.length - 1];
-    if (getComputedStyle(lastExercise).position === 'static') lastExercise.style.position = 'relative';
+    if (getComputedStyle(target).position === 'static') target.style.position = 'relative';
 
     var controls = makeExerciseLineControls(pageIndex);
     var count = getVisibleExerciseCount(pageIndex);
     var minus = controls.querySelector('.minus');
     var plus = controls.querySelector('.plus');
-    if (minus) minus.disabled = count <= 1;
+    if (minus) minus.disabled = count <= 0;
     if (plus) plus.disabled = count >= 6 || (pageIndex > 0 && getVisibleExerciseCount(0) === 0);
 
-    lastExercise.appendChild(controls);
+    target.appendChild(controls);
   });
 }
 
