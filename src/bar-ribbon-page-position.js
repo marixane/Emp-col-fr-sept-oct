@@ -125,6 +125,10 @@ function syncA4ProxyControls() {
 
   var preview = findByText('button', ['Voir PDF', 'Préparation...']);
   var previewProxy = makeProxy('a4-footer-preview', 'Voir PDF', preview && preview.textContent.trim() === 'Préparation...' ? '...' : 'PDF', function () {
+    if (typeof window.startExamPdf === 'function') {
+      window.startExamPdf('preview');
+      return;
+    }
     var b = findByText('button', ['Voir PDF', 'Préparation...']);
     if (b && !b.disabled) b.click();
   });
@@ -132,6 +136,10 @@ function syncA4ProxyControls() {
 
   var exportButton = findByText('button.secondary', ['Exporter PDF A4', 'Export en cours...']);
   var exportProxy = makeProxy('a4-footer-export', 'Exporter PDF A4', '', function () {
+    if (typeof window.startExamPdf === 'function') {
+      window.startExamPdf('download');
+      return;
+    }
     var b = findByText('button.secondary', ['Exporter PDF A4', 'Export en cours...']);
     if (b && !b.disabled) b.click();
   });
