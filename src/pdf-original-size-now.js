@@ -61,20 +61,6 @@ function stretchExtraPageForPdf(clone) {
   });
 }
 
-function addPdfBottomBorder(clone) {
-  const bottomLine = document.createElement('div');
-  bottomLine.className = 'pdf-page-bottom-border';
-  bottomLine.style.setProperty('position', 'absolute', 'important');
-  bottomLine.style.setProperty('left', '0', 'important');
-  bottomLine.style.setProperty('right', '0', 'important');
-  bottomLine.style.setProperty('bottom', '0', 'important');
-  bottomLine.style.setProperty('height', '1px', 'important');
-  bottomLine.style.setProperty('background', '#000', 'important');
-  bottomLine.style.setProperty('z-index', '999999', 'important');
-  bottomLine.style.setProperty('pointer-events', 'none', 'important');
-  clone.appendChild(bottomLine);
-}
-
 function preparePdfClone(original) {
   const clone = original.cloneNode(true);
   copyTextareaValues(original, clone);
@@ -106,7 +92,6 @@ function preparePdfClone(original) {
   clone.classList.toggle('no-pdf-lines', !!hideLines);
 
   if (original.classList.contains('second-page')) stretchExtraPageForPdf(clone);
-  addPdfBottomBorder(clone);
 
   return clone;
 }
@@ -127,6 +112,12 @@ function createHiddenPdfWorkspace() {
   workspace.style.setProperty('pointer-events', 'none', 'important');
   document.body.appendChild(workspace);
   return workspace;
+}
+
+function drawBottomBorder(pdf) {
+  pdf.setDrawColor(0, 0, 0);
+  pdf.setLineWidth(0.25);
+  pdf.line(0, 296.5, 210, 296.5);
 }
 
 async function makeOriginalPdf() {
@@ -161,6 +152,7 @@ async function makeOriginalPdf() {
 
       if (index) pdf.addPage('a4', 'portrait');
       pdf.addImage(canvas.toDataURL('image/jpeg', 1), 'JPEG', 0, 0, 210, 297);
+      drawBottomBorder(pdf);
     }
   } finally {
     if (!previousOriginalSize) document.body.classList.remove('pdf-original-size-now');
