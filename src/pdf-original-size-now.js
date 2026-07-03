@@ -28,6 +28,39 @@ function copyTextareaValues(original, clone) {
   });
 }
 
+function stretchExtraPageForPdf(clone) {
+  const list = clone.querySelector('.exercise-list');
+  if (!list) return;
+  const exercises = Array.from(list.querySelectorAll('.exam-exercise')).filter(function (exercise) {
+    return !exercise.classList.contains('blank-exercise');
+  });
+  if (!exercises.length) return;
+
+  const pageHeight = 1123;
+  const footerGap = 52;
+  const top = list.offsetTop || 0;
+  const gap = Math.max(0, (exercises.length - 1) * 2);
+  const available = Math.max(120, pageHeight - top - footerGap);
+  const base = Math.floor((available - gap) / exercises.length);
+  const last = Math.max(15, available - gap - base * (exercises.length - 1));
+
+  list.style.setProperty('height', available + 'px', 'important');
+  list.style.setProperty('min-height', available + 'px', 'important');
+  list.style.setProperty('max-height', available + 'px', 'important');
+  list.style.setProperty('display', 'flex', 'important');
+  list.style.setProperty('flex-direction', 'column', 'important');
+  list.style.setProperty('gap', '2px', 'important');
+  list.style.setProperty('overflow', 'hidden', 'important');
+
+  exercises.forEach(function (exercise, index) {
+    const h = index === exercises.length - 1 ? last : base;
+    exercise.style.setProperty('height', h + 'px', 'important');
+    exercise.style.setProperty('min-height', '15px', 'important');
+    exercise.style.setProperty('flex', '0 0 ' + h + 'px', 'important');
+    exercise.style.setProperty('overflow', 'hidden', 'important');
+  });
+}
+
 function preparePdfClone(original) {
   const clone = original.cloneNode(true);
   copyTextareaValues(original, clone);
@@ -57,6 +90,8 @@ function preparePdfClone(original) {
   const linesToggle = document.querySelector('.pdf-lines-toggle');
   const hideLines = linesToggle && String(linesToggle.textContent || '').toLowerCase().includes('masquées');
   clone.classList.toggle('no-pdf-lines', !!hideLines);
+
+  if (original.classList.contains('second-page')) stretchExtraPageForPdf(clone);
 
   return clone;
 }
