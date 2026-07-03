@@ -1,5 +1,5 @@
 .bar-buttons {
-  opacity: .22 !important;
+  opacity: .45 !important;
   transition: opacity .12s ease !important;
 }
 
@@ -8,9 +8,9 @@
 }
 
 .bar-buttons button {
-  background: rgba(255, 255, 255, .32) !important;
-  border-color: rgba(100, 116, 139, .35) !important;
-  color: rgba(15, 23, 42, .45) !important;
+  background: rgba(255, 255, 255, .55) !important;
+  border-color: rgba(100, 116, 139, .50) !important;
+  color: rgba(15, 23, 42, .65) !important;
   box-shadow: none !important;
 }
 
@@ -28,12 +28,12 @@
 }
 
 .bar-buttons button:disabled {
-  opacity: .18 !important;
+  opacity: .28 !important;
 }
 
 @media (max-width: 1200px) {
   .bar-buttons {
-    opacity: .28 !important;
+    opacity: .50 !important;
   }
 
   .bar-buttons:hover {
