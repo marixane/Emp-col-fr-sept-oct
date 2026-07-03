@@ -95,10 +95,30 @@ function forceExerciseBottomFrame(clone) {
   body.appendChild(bottomLine);
 }
 
+function isGridMode(clone) {
+  return clone.classList.contains('line-mode-grid') ||
+    document.body.classList.contains('line-mode-grid') ||
+    document.querySelector('.preview-zone .a4-page.line-mode-grid,.a4-page.line-mode-grid');
+}
+
+function addPdfLine(body, className, styles) {
+  const line = document.createElement('div');
+  line.className = className;
+  Object.keys(styles).forEach(function (key) {
+    line.style.setProperty(key, styles[key], 'important');
+  });
+  line.style.setProperty('position', 'absolute', 'important');
+  line.style.setProperty('background', '#d9d9d9', 'important');
+  line.style.setProperty('z-index', '0', 'important');
+  line.style.setProperty('pointer-events', 'none', 'important');
+  body.insertBefore(line, body.firstChild);
+}
+
 function forcePdfLineBackground(clone) {
   const hideLines = clone.classList.contains('no-pdf-lines');
+  const gridMode = !!isGridMode(clone);
   clone.querySelectorAll('.exercise-body').forEach(function (body) {
-    body.querySelectorAll('.pdf-real-line').forEach(function (line) { line.remove(); });
+    body.querySelectorAll('.pdf-real-line,.pdf-real-grid-line').forEach(function (line) { line.remove(); });
     body.style.setProperty('position', 'relative', 'important');
     body.style.setProperty('background', '#ffffff', 'important');
     body.style.setProperty('background-color', '#ffffff', 'important');
@@ -111,18 +131,24 @@ function forcePdfLineBackground(clone) {
     const width = Math.max(0, body.scrollWidth || body.offsetWidth || rect.width || 0);
     if (!height || !width) return;
 
-    for (let y = 28; y < height; y += 29) {
-      const line = document.createElement('div');
-      line.className = 'pdf-real-line';
-      line.style.setProperty('position', 'absolute', 'important');
-      line.style.setProperty('left', '0', 'important');
-      line.style.setProperty('right', '0', 'important');
-      line.style.setProperty('top', y + 'px', 'important');
-      line.style.setProperty('height', '1px', 'important');
-      line.style.setProperty('background', '#d9d9d9', 'important');
-      line.style.setProperty('z-index', '0', 'important');
-      line.style.setProperty('pointer-events', 'none', 'important');
-      body.insertBefore(line, body.firstChild);
+    for (let y = 28; y < height; y += 28) {
+      addPdfLine(body, 'pdf-real-line', {
+        left: '0',
+        right: '0',
+        top: y + 'px',
+        height: '1px'
+      });
+    }
+
+    if (gridMode) {
+      for (let x = 28; x < width; x += 28) {
+        addPdfLine(body, 'pdf-real-grid-line', {
+          top: '0',
+          bottom: '0',
+          left: x + 'px',
+          width: '1px'
+        });
+      }
     }
 
     body.querySelectorAll('img, .white-mask, .draggable-photo, .empty-zone').forEach(function (el) {
