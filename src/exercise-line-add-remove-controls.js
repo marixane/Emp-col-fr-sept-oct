@@ -121,7 +121,7 @@ function installExerciseButtonImmediateTap() {
 }
 
 function ensureExerciseLineControlStyle() {
-  var css = '.exercise-line-count-controls{position:absolute!important;left:calc(50% + 0px)!important;top:3px!important;transform:translateX(-50%)!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:17px!important;column-gap:17px!important;pointer-events:auto!important;z-index:5000!important}.exercise-line-count-controls button{position:relative!important;z-index:5001!important;width:48px!important;min-width:48px!important;height:24px!important;min-height:24px!important;border-radius:6px!important;border:1px solid #64748b!important;background:#ffffff!important;color:#0f172a!important;font-size:17px!important;font-weight:900!important;line-height:1!important;padding:0!important;margin:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;box-sizing:border-box!important;box-shadow:0 1px 3px rgba(15,23,42,.18)!important;touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important}.exercise-line-count-controls button:hover{background:#e0f2fe!important;border-color:#2563eb!important;color:#1d4ed8!important}.exercise-line-count-controls button.minus:hover{background:#fee2e2!important;border-color:#dc2626!important;color:#b91c1c!important}.exercise-line-count-controls button:disabled{opacity:.35!important;cursor:not-allowed!important}body.no-title-points .exercise-line-count-controls,body.no-title-points .exercise-line-count-controls button,body.arabic-mode .exercise-line-count-controls,body.arabic-mode .exercise-line-count-controls button{display:inline-flex!important}@media(max-width:1200px){.exercise-line-count-controls{left:calc(50% + 5px)!important;top:0px!important;gap:15px!important;column-gap:15px!important}.exercise-line-count-controls button{width:50px!important;min-width:50px!important;height:34px!important;min-height:34px!important;font-size:18px!important;border-radius:8px!important;touch-action:none!important}}@media print{.exercise-line-count-controls{display:none!important}}';
+  var css = '.exercise-line-count-controls{position:absolute!important;left:calc(50% + 0px)!important;top:3px!important;transform:translateX(-50%)!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:17px!important;column-gap:17px!important;pointer-events:auto!important;z-index:5000!important}.a4-page>.exercise-line-count-controls{top:calc(var(--exam-header-height,104px) + 5px)!important}.exercise-line-count-controls button{position:relative!important;z-index:5001!important;width:48px!important;min-width:48px!important;height:24px!important;min-height:24px!important;border-radius:6px!important;border:1px solid #64748b!important;background:#ffffff!important;color:#0f172a!important;font-size:17px!important;font-weight:900!important;line-height:1!important;padding:0!important;margin:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;box-sizing:border-box!important;box-shadow:0 1px 3px rgba(15,23,42,.18)!important;touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important}.exercise-line-count-controls button:hover{background:#e0f2fe!important;border-color:#2563eb!important;color:#1d4ed8!important}.exercise-line-count-controls button.minus:hover{background:#fee2e2!important;border-color:#dc2626!important;color:#b91c1c!important}.exercise-line-count-controls button:disabled{opacity:.35!important;cursor:not-allowed!important}body.no-title-points .exercise-line-count-controls,body.no-title-points .exercise-line-count-controls button,body.arabic-mode .exercise-line-count-controls,body.arabic-mode .exercise-line-count-controls button{display:inline-flex!important}@media(max-width:1200px){.exercise-line-count-controls{left:calc(50% + 5px)!important;top:0px!important;gap:15px!important;column-gap:15px!important}.a4-page>.exercise-line-count-controls{top:calc(var(--exam-header-height,104px) + 4px)!important}.exercise-line-count-controls button{width:50px!important;min-width:50px!important;height:34px!important;min-height:34px!important;font-size:18px!important;border-radius:8px!important;touch-action:none!important}}@media print{.exercise-line-count-controls{display:none!important}}';
   var style = document.getElementById('exercise-line-add-remove-style');
   if (!style) {
     style = document.createElement('style');
@@ -167,25 +167,21 @@ function syncExerciseLineControls() {
   document.querySelectorAll('.a4-page').forEach(function (pageNode, pageIndex) {
     pageNode.querySelectorAll('.exercise-line-count-controls').forEach(function (old) { old.remove(); });
 
-    var allExercises = Array.from(pageNode.querySelectorAll('.exam-exercise'));
-    var visibleExercises = allExercises.filter(function (exercise) {
+    if (getComputedStyle(pageNode).position === 'static') pageNode.style.position = 'relative';
+
+    var visibleExercises = Array.from(pageNode.querySelectorAll('.exam-exercise')).filter(function (exercise) {
       return !exercise.classList.contains('blank-exercise');
     });
-    var targets = visibleExercises.length ? visibleExercises : allExercises.length ? [allExercises[0]] : [pageNode];
 
-    targets.forEach(function (target) {
-      if (getComputedStyle(target).position === 'static') target.style.position = 'relative';
+    var controls = makeExerciseLineControls(pageIndex);
+    var count = getVisibleExerciseCount(pageIndex);
+    var realCount = visibleExercises.length;
+    var minus = controls.querySelector('.minus');
+    var plus = controls.querySelector('.plus');
+    if (minus) minus.disabled = realCount <= 0;
+    if (plus) plus.disabled = count >= 6 || (pageIndex > 0 && getVisibleExerciseCount(0) === 0);
 
-      var controls = makeExerciseLineControls(pageIndex);
-      var count = getVisibleExerciseCount(pageIndex);
-      var realCount = visibleExercises.length;
-      var minus = controls.querySelector('.minus');
-      var plus = controls.querySelector('.plus');
-      if (minus) minus.disabled = realCount <= 0;
-      if (plus) plus.disabled = count >= 6 || (pageIndex > 0 && getVisibleExerciseCount(0) === 0);
-
-      target.appendChild(controls);
-    });
+    pageNode.appendChild(controls);
   });
 }
 
