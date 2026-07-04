@@ -211,6 +211,10 @@ body.cahier-tab-active .exercise-line-count-overlay {
   text-align: center;
 }
 
+.timetable-cell-content:not(.colored-cell) textarea {
+  padding: 32px 2px 0;
+}
+
 .timetable-cell-content.colored-cell textarea {
   grid-row: 2;
   align-self: stretch;
@@ -222,6 +226,10 @@ body.cahier-tab-active .exercise-line-count-overlay {
 
 .timetable-cell-content textarea:not(:placeholder-shown) {
   padding: 0 2px;
+}
+
+.timetable-cell-content:not(.colored-cell) textarea:not(:placeholder-shown) {
+  padding: 32px 2px 0;
 }
 
 .timetable-cell-content.colored-cell textarea:not(:placeholder-shown) {
