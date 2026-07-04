@@ -173,7 +173,7 @@ body.cahier-tab-active .exercise-line-count-overlay {
 
 .timetable-cell-content textarea {
   min-height: 16px;
-  padding: 36px 2px 0;
+  padding: 16px 2px 0;
   font-size: 11px;
   font-weight: 900;
   line-height: 1;
@@ -181,7 +181,7 @@ body.cahier-tab-active .exercise-line-count-overlay {
 }
 
 .timetable-cell-content textarea:not(:placeholder-shown) {
-  padding: 36px 2px 0;
+  padding: 16px 2px 0;
 }
 
 .timetable-cell-content textarea::placeholder {
