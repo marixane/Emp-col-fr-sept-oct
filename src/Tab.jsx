@@ -240,6 +240,24 @@ export default function Tab() {
     }));
   };
 
+  const deleteCell = (dayIndex, hourIndex) => {
+    setRows((current) => current.map((row, i) => {
+      if (i !== dayIndex) return row;
+      const currentHour = hours[hourIndex];
+      const cell = normalizeCell(row.cells[currentHour]);
+      const nextCells = { ...row.cells, [currentHour]: createCell() };
+
+      for (let index = hourIndex + 1; index < hourIndex + cell.span && index < hours.length; index += 1) {
+        nextCells[hours[index]] = createCell();
+      }
+
+      return { ...row, cells: nextCells };
+    }));
+
+    setCopiedCell(null);
+    setSelectedCell(null);
+  };
+
   return <main className="cahier-shell clean-cahier-shell">
     <section className="cahier-preview-zone">
       <div className="a4-page cahier-page">
@@ -290,6 +308,7 @@ export default function Tab() {
                     {hasClass && <div className="span-tools no-print" onClick={(e) => e.stopPropagation()}>
                       <button type="button" onClick={() => extendCellLeft(dayIndex, hourIndex)} disabled={!canExtendLeft(row, hourIndex)}>‹</button>
                       {cell.span > 1 && <button type="button" className="span-remove-button" onClick={() => shrinkCellLeft(dayIndex, hourIndex)}>×‹</button>}
+                      <button type="button" className="cell-delete-button" onClick={() => deleteCell(dayIndex, hourIndex)} title="Supprimer la cellule">×</button>
                       {cell.span > 1 && <button type="button" className="span-remove-button" onClick={() => shrinkCellRight(dayIndex, hourIndex)}>×›</button>}
                       <button type="button" onClick={() => extendCellRight(dayIndex, hourIndex)} disabled={!canExtendRight(row, hourIndex)}>›</button>
                     </div>}
