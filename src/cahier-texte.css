@@ -399,9 +399,9 @@ body.cahier-tab-active .exercise-line-count-overlay {
 }
 
 .span-tools .span-remove-button {
-  background: #fff7ed;
-  color: #9a3412;
-  border-color: #f97316;
+  background: #111;
+  color: white;
+  border-color: #111;
   font-size: 10px;
 }
 
@@ -411,11 +411,7 @@ body.cahier-tab-active .exercise-line-count-overlay {
   font-size: 11px;
 }
 
-.span-tools .span-remove-button:hover {
-  background: #fed7aa;
-  color: #7c2d12;
-}
-
+.span-tools .span-remove-button:hover,
 .span-tools .cell-delete-button:hover {
   background: white;
   color: #111;
