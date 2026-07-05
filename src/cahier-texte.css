@@ -512,6 +512,7 @@ body.cahier-tab-active .exercise-line-count-overlay {
 .homework-subject {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 0 30px;
   border-right: 1px solid #e6e6e6;
   color: #3f4050;
@@ -519,6 +520,7 @@ body.cahier-tab-active .exercise-line-count-overlay {
   font-weight: 900;
   line-height: 1.3;
   white-space: pre-line;
+  text-align: center;
   outline: none;
 }
 
@@ -527,6 +529,7 @@ body.cahier-tab-active .exercise-line-count-overlay {
   color: rgba(63, 64, 80, 0.28);
   font-size: 18px;
   font-weight: 900;
+  text-align: center;
 }
 
 .homework-text {
