@@ -9,13 +9,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@sparticuz/chromium": "latest",
     "@vitejs/plugin-react": "latest",
     "vite": "latest",
     "react": "latest",
     "react-dom": "latest",
     "html2canvas": "latest",
     "html-to-image": "latest",
-    "jspdf": "latest"
+    "jspdf": "latest",
+    "puppeteer-core": "latest"
   },
   "devDependencies": {}
 }
