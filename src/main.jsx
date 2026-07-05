@@ -102,5 +102,6 @@ import './cahier-group-box-polish.css';
 import './cahier-empty-autres-groups.js';
 import './cahier-exam-events.css';
 import './cahier-exam-events.js';
+import './cahier-hide-empty-group-pages.js';
 
 createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
