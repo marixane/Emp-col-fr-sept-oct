@@ -5,16 +5,31 @@ body.cahier-tab-active .cahier-group-cover-page {
   justify-content: center !important;
   overflow: hidden !important;
   padding: 46px 58px !important;
-  background: linear-gradient(135deg, var(--group-cover-color), #ffffff 58%, var(--group-cover-color)) !important;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255,255,255,0.92) 0 9%, transparent 10%),
+    radial-gradient(circle at 84% 16%, rgba(255,255,255,0.82) 0 8%, transparent 9%),
+    radial-gradient(circle at 14% 84%, rgba(255,255,255,0.72) 0 10%, transparent 11%),
+    linear-gradient(135deg, var(--group-cover-color), #ffffff 44%, var(--group-cover-color)) !important;
 }
 
 body.cahier-tab-active .cahier-group-cover-page::before {
   content: '';
   position: absolute;
-  inset: 26px;
+  inset: 24px;
   border-radius: 30px;
-  border: 4px solid rgba(17, 24, 39, 0.12);
-  box-shadow: inset 0 0 0 12px rgba(255,255,255,0.34), 0 18px 34px rgba(17,24,39,0.12);
+  border: 5px solid color-mix(in srgb, var(--group-cover-color) 72%, #111827 28%);
+  box-shadow: inset 0 0 0 12px rgba(255,255,255,0.34), 0 18px 34px rgba(17,24,39,0.16);
+}
+
+body.cahier-tab-active .cahier-group-cover-page::after {
+  content: '';
+  position: absolute;
+  inset: auto -80px -120px auto;
+  width: 320px;
+  height: 320px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--group-cover-color) 62%, transparent);
+  opacity: 0.55;
 }
 
 body.cahier-tab-active .cahier-group-cover-card {
@@ -26,11 +41,11 @@ body.cahier-tab-active .cahier-group-cover-card {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 26px;
+  gap: 30px;
   border-radius: 34px;
-  background: rgba(255,255,255,0.72);
-  border: 2px solid rgba(17,24,39,0.14);
-  box-shadow: 0 22px 46px rgba(17,24,39,0.16);
+  background: rgba(255,255,255,0.68);
+  border: 3px solid rgba(255,255,255,0.92);
+  box-shadow: 0 24px 50px rgba(17,24,39,0.20), inset 0 0 0 6px color-mix(in srgb, var(--group-cover-color) 24%, transparent);
   text-align: center;
   color: #111827;
   font-family: Arial, sans-serif;
@@ -40,77 +55,78 @@ body.cahier-tab-active .cahier-group-cover-logo-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 26px;
+  gap: 28px;
 }
 
 body.cahier-tab-active .cahier-group-cover-logo {
-  width: 92px;
-  height: 92px;
+  width: 102px;
+  height: 102px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: white;
-  border: 2px solid rgba(17,24,39,0.14);
-  box-shadow: 0 10px 20px rgba(17,24,39,0.14);
-  font-size: 48px;
+  background: linear-gradient(180deg, white, color-mix(in srgb, var(--group-cover-color) 22%, white));
+  border: 4px solid color-mix(in srgb, var(--group-cover-color) 55%, white);
+  box-shadow: 0 13px 25px rgba(17,24,39,0.18);
+  font-size: 50px;
 }
 
 body.cahier-tab-active .cahier-group-cover-official-logo {
-  width: 104px;
-  height: 104px;
+  width: 118px;
+  height: 118px;
   object-fit: contain;
   padding: 10px;
   border-radius: 999px;
-  background: white;
-  border: 2px solid rgba(17,24,39,0.14);
-  box-shadow: 0 10px 20px rgba(17,24,39,0.14);
+  background: linear-gradient(180deg, white, color-mix(in srgb, var(--group-cover-color) 18%, white));
+  border: 5px solid color-mix(in srgb, var(--group-cover-color) 62%, white);
+  box-shadow: 0 15px 28px rgba(17,24,39,0.20);
 }
 
 body.cahier-tab-active .cahier-group-cover-kicker {
-  font-size: 22px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: rgba(17,24,39,0.58);
+  display: none !important;
 }
 
 body.cahier-tab-active .cahier-group-cover-title {
-  padding: 18px 44px;
-  border-radius: 24px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.65), var(--group-cover-color), rgba(255,255,255,0.65));
-  color: #111827;
-  font-size: 56px;
+  padding: 26px 58px;
+  border-radius: 30px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--group-cover-color) 28%, white), var(--group-cover-color), color-mix(in srgb, var(--group-cover-color) 28%, white));
+  color: #0f172a;
+  font-size: 72px;
   font-weight: 1000;
-  line-height: 1.05;
+  line-height: 1.02;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: 0 2px 0 rgba(255,255,255,0.9);
+  text-shadow: 0 3px 0 rgba(255,255,255,0.95);
+  box-shadow: 0 14px 28px color-mix(in srgb, var(--group-cover-color) 35%, transparent);
 }
 
 body.cahier-tab-active .cahier-group-cover-subtitle {
-  font-size: 26px;
+  padding: 10px 24px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.72);
+  border: 2px solid color-mix(in srgb, var(--group-cover-color) 48%, white);
+  font-size: 30px;
   font-weight: 900;
-  color: rgba(17,24,39,0.74);
+  color: #334155;
 }
 
 body.cahier-tab-active .cahier-group-cover-icons {
   display: flex;
-  gap: 16px;
-  margin-top: 6px;
+  gap: 18px;
+  margin-top: 4px;
 }
 
 body.cahier-tab-active .cahier-group-cover-icons span {
-  width: 58px;
-  height: 58px;
+  width: 64px;
+  height: 64px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.86);
-  border: 1px solid rgba(17,24,39,0.12);
-  box-shadow: 0 6px 13px rgba(17,24,39,0.10);
-  font-size: 31px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, white, color-mix(in srgb, var(--group-cover-color) 28%, white));
+  border: 2px solid color-mix(in srgb, var(--group-cover-color) 48%, white);
+  box-shadow: 0 8px 16px rgba(17,24,39,0.14);
+  font-size: 34px;
 }
 
 @media print {
