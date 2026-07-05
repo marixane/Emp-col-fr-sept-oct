@@ -4,6 +4,7 @@ const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 const HOURS = ['08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00', '12:00 - 13:00', '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00', '16:00 - 17:00', '17:00 - 18:00'];
 const CELL_COLORS = ['#fff3bf', '#d8f3dc', '#dbeafe', '#ffe4e6', '#ede9fe', '#cffafe', '#fef3c7', '#dcfce7', '#e0e7ff', '#fce7f3', '#ccfbf1', '#f5f5f4', '#fbcfe8', '#bfdbfe', '#bbf7d0', '#fed7aa', '#ddd6fe', '#bae6fd', '#fecdd3', '#ccfbf1'];
 const HOMEWORK_COLORS = ['#66c43f', '#b34bd7', '#2f80ed', '#ff3f5f', '#f2994a'];
+const GROUP_COLORS = ['#e0f2fe', '#dcfce7', '#fef3c7', '#fce7f3', '#ede9fe'];
 const DOT_TEXT = Array.from({ length: 4 }, () => '.'.repeat(74)).join('\n');
 
 const createCell = () => ({ text: '', room: 1, span: 1, hidden: false });
@@ -16,121 +17,15 @@ const normalizeCell = (cell) => typeof cell === 'object' && cell !== null ? {
 } : { text: String(cell ?? ''), room: 1, span: 1, hidden: false };
 const cloneCell = (cell) => ({ ...normalizeCell(cell), hidden: false });
 
-const dotTextStyle = {
-  color: 'rgba(63, 64, 80, 0.28)',
-  fontSize: '22px',
-  fontWeight: 900,
-  lineHeight: 1.35,
-  letterSpacing: '1px',
-  whiteSpace: 'pre-wrap',
-  overflow: 'hidden'
-};
-
-const subjectTextStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'stretch',
-  justifyContent: 'center',
-  gap: '6px',
-  padding: '8px 10px',
-  textAlign: 'center',
-  overflow: 'hidden'
-};
-
-const sessionLineStyle = {
-  display: 'grid',
-  gridTemplateColumns: '52px 1fr',
-  alignItems: 'center',
-  gap: '6px',
-  minHeight: '24px',
-  padding: '4px 7px',
-  border: '1px solid rgba(63, 64, 80, 0.18)',
-  borderRadius: '8px',
-  background: 'rgba(63, 64, 80, 0.045)',
-  color: '#343545',
-  fontFamily: 'Arial, sans-serif',
-  lineHeight: 1,
-  overflow: 'hidden'
-};
-
-const sessionHourStyle = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '18px',
-  borderRadius: '6px',
-  background: 'var(--homework-color)',
-  color: 'white',
-  fontSize: '12px',
-  fontWeight: 900,
-  whiteSpace: 'nowrap'
-};
-
-const sessionClassStyle = {
-  display: 'block',
-  minWidth: 0,
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-  fontSize: '14px',
-  fontWeight: 900,
-  textTransform: 'uppercase'
-};
-
-const levelGroupsStyle = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(5, 1fr)',
-  gap: '7px',
-  marginTop: '8px'
-};
-
-const levelGroupBoxStyle = {
-  minHeight: '54px',
-  padding: '6px 7px',
-  border: '1.8px solid rgba(17, 17, 17, 0.75)',
-  borderRadius: '10px',
-  background: 'linear-gradient(180deg, rgba(245, 247, 255, 0.95), rgba(255, 255, 255, 0.98))',
-  boxShadow: '0 2px 5px rgba(17, 17, 17, 0.08)',
-  overflow: 'hidden'
-};
-
-const levelGroupTitleStyle = {
-  marginBottom: '5px',
-  color: '#111827',
-  fontSize: '9px',
-  fontWeight: 900,
-  textAlign: 'center',
-  textTransform: 'uppercase',
-  letterSpacing: '0.2px'
-};
-
-const levelGroupClassesStyle = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  justifyContent: 'center',
-  gap: '3px',
-  color: 'rgba(17, 17, 17, 0.42)',
-  fontSize: '8px',
-  fontWeight: 800,
-  lineHeight: 1.1,
-  textAlign: 'center'
-};
-
-const levelChipStyle = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  maxWidth: '100%',
-  padding: '2px 5px',
-  borderRadius: '999px',
-  background: 'rgba(37, 99, 235, 0.10)',
-  color: '#1f2937',
-  fontSize: '8px',
-  fontWeight: 900,
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis'
-};
+const dotTextStyle = { color: 'rgba(63, 64, 80, 0.28)', fontSize: '22px', fontWeight: 900, lineHeight: 1.35, letterSpacing: '1px', whiteSpace: 'pre-wrap', overflow: 'hidden' };
+const subjectTextStyle = { display: 'flex', flexDirection: 'column', alignItems: 'stretch', justifyContent: 'center', gap: '6px', padding: '8px 10px', textAlign: 'center', overflow: 'hidden' };
+const sessionLineStyle = { display: 'grid', gridTemplateColumns: '52px 1fr', alignItems: 'center', gap: '6px', minHeight: '24px', padding: '4px 7px', border: '1px solid rgba(63, 64, 80, 0.18)', borderRadius: '8px', background: 'rgba(63, 64, 80, 0.045)', color: '#343545', fontFamily: 'Arial, sans-serif', lineHeight: 1, overflow: 'hidden' };
+const sessionHourStyle = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '18px', borderRadius: '6px', background: 'var(--homework-color)', color: 'white', fontSize: '12px', fontWeight: 900, whiteSpace: 'nowrap' };
+const sessionClassStyle = { display: 'block', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '14px', fontWeight: 900, textTransform: 'uppercase' };
+const levelGroupsStyle = { display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '9px', marginTop: '9px' };
+const levelGroupTitleStyle = { marginBottom: '7px', color: '#111827', fontSize: '10px', fontWeight: 900, textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.3px' };
+const levelGroupClassesStyle = { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignContent: 'flex-start', gap: '5px', minHeight: '46px', color: 'rgba(17, 17, 17, 0.45)', fontSize: '9px', fontWeight: 800, lineHeight: 1.1, textAlign: 'center' };
+const levelChipStyle = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', maxWidth: '100%', padding: '4px 7px', borderRadius: '999px', border: '1px solid rgba(17, 17, 17, 0.18)', background: 'white', color: '#111827', fontSize: '9px', fontWeight: 900, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor: 'grab', boxShadow: '0 1px 3px rgba(17, 17, 17, 0.12)' };
 
 const getCellColor = (text) => {
   const normalized = String(text ?? '').toLowerCase().replace(/[\s-]/g, '').trim();
@@ -147,7 +42,6 @@ const getSchoolStartYear = () => {
   const today = new Date();
   return today.getMonth() >= 8 ? today.getFullYear() : today.getFullYear() - 1;
 };
-
 const getSchoolYear = () => {
   const startYear = getSchoolStartYear();
   return `Année scolaire : ${startYear} / ${startYear + 1}`;
@@ -179,6 +73,8 @@ export default function Tab() {
   const [selectedCell, setSelectedCell] = useState(null);
   const [draggedCell, setDraggedCell] = useState(null);
   const [dragOverCell, setDragOverCell] = useState(null);
+  const [manualGroups, setManualGroups] = useState(null);
+  const [draggedClass, setDraggedClass] = useState(null);
   const schoolYear = getSchoolYear();
 
   const validateOnEnter = (event) => {
@@ -196,20 +92,22 @@ export default function Tab() {
       delete nextCells[oldHour];
       return { ...row, cells: nextCells };
     }));
+    setManualGroups(null);
   };
   const updateDay = (index, value) => setRows((current) => current.map((row, i) => i === index ? { ...row, day: value } : row));
-  const updateCellText = (dayIndex, hour, value) => setRows((current) => current.map((row, i) => i === dayIndex ? { ...row, cells: { ...row.cells, [hour]: { ...normalizeCell(row.cells[hour]), text: value } } } : row));
+  const updateCellText = (dayIndex, hour, value) => {
+    setRows((current) => current.map((row, i) => i === dayIndex ? { ...row, cells: { ...row.cells, [hour]: { ...normalizeCell(row.cells[hour]), text: value } } } : row));
+    setManualGroups(null);
+  };
   const updateRoom = (dayIndex, hour, value) => setRows((current) => current.map((row, i) => i === dayIndex ? { ...row, cells: { ...row.cells, [hour]: { ...normalizeCell(row.cells[hour]), room: clampRoom(value) } } } : row));
 
   const sessionsByDay = rows.map((row) => hours.reduce((list, hour) => {
     const cell = normalizeCell(row.cells[hour]);
-    if (!cell.hidden && cell.text.trim()) {
-      list.push({ hour: getHourStart(hour), className: cell.text.trim() });
-    }
+    if (!cell.hidden && cell.text.trim()) list.push({ hour: getHourStart(hour), className: cell.text.trim() });
     return list;
   }, []));
 
-  const groupedClasses = Array.from(rows.reduce((groups, row) => {
+  const autoGroups = Array.from(rows.reduce((groups, row) => {
     hours.forEach((hour) => {
       const cell = normalizeCell(row.cells[hour]);
       const className = cell.text.trim();
@@ -221,19 +119,25 @@ export default function Tab() {
       }
     });
     return groups;
-  }, new Map()).entries()).slice(0, 5);
+  }, new Map()).entries()).slice(0, 5).map(([title, classes]) => ({ title, classes }));
+  const emptyGroups = Array.from({ length: 5 }, (_, index) => ({ title: `Groupe ${index + 1}`, classes: [] }));
+  const classGroups = (manualGroups ?? autoGroups).concat(emptyGroups).slice(0, 5);
+
+  const moveClassToGroup = (className, targetIndex) => {
+    setManualGroups((current) => {
+      const base = (current ?? classGroups).map((group, index) => ({ title: group.title || `Groupe ${index + 1}`, classes: [...(group.classes ?? [])] }));
+      const next = base.concat(emptyGroups).slice(0, 5).map((group, index) => ({ title: group.title || `Groupe ${index + 1}`, classes: group.classes.filter((item) => item !== className) }));
+      if (!next[targetIndex].classes.includes(className)) next[targetIndex].classes.push(className);
+      return next;
+    });
+  };
 
   const homeworkEntries = Array.from({ length: 30 }, (_, index) => {
     const date = new Date(getSchoolStartYear(), 8, index + 1);
     const dayIndex = getMondayBasedDayIndex(date);
     if (dayIndex >= rows.length || !sessionsByDay[dayIndex]?.length) return null;
     const dayNumber = String(index + 1).padStart(2, '0');
-    return {
-      date: `${String(rows[dayIndex]?.day || DAYS[dayIndex]).toUpperCase()} ${dayNumber}/09`,
-      sessions: sessionsByDay[dayIndex],
-      text: DOT_TEXT,
-      color: HOMEWORK_COLORS[dayIndex % HOMEWORK_COLORS.length]
-    };
+    return { date: `${String(rows[dayIndex]?.day || DAYS[dayIndex]).toUpperCase()} ${dayNumber}/09`, sessions: sessionsByDay[dayIndex], text: DOT_TEXT, color: HOMEWORK_COLORS[dayIndex % HOMEWORK_COLORS.length] };
   }).filter(Boolean);
   const homeworkPages = chunkEntries(homeworkEntries, 5);
 
@@ -261,6 +165,7 @@ export default function Tab() {
       for (let index = hourIndex + 1; index < hourIndex + pasted.span; index += 1) nextCells[hours[index]] = { ...createCell(), hidden: true };
       return { ...row, cells: nextCells };
     }));
+    setManualGroups(null);
     setCopiedCell(cloneCell(cellToPaste));
     setSelectedCell(`${dayIndex}-${hourIndex}`);
   };
@@ -327,6 +232,7 @@ export default function Tab() {
       for (let index = hourIndex + 1; index < hourIndex + cell.span && index < hours.length; index += 1) nextCells[hours[index]] = createCell();
       return { ...row, cells: nextCells };
     }));
+    setManualGroups(null);
     setCopiedCell(null);
     setSelectedCell(null);
   };
@@ -365,15 +271,10 @@ export default function Tab() {
           </tr>)}</tbody>
         </table>
         <div style={levelGroupsStyle}>
-          {Array.from({ length: 5 }, (_, index) => {
-            const group = groupedClasses[index];
-            const title = group?.[0] ?? `Groupe ${index + 1}`;
-            const classes = group?.[1] ?? [];
-            return <div key={title} style={levelGroupBoxStyle} contentEditable suppressContentEditableWarning onKeyDown={validateOnEnter}>
-              <div style={levelGroupTitleStyle}>{title}</div>
-              <div style={levelGroupClassesStyle}>{classes.length ? classes.map((className) => <span key={className} style={levelChipStyle}>{className}</span>) : 'Classes du même niveau'}</div>
-            </div>;
-          })}
+          {classGroups.map((group, index) => <div key={`${group.title}-${index}`} style={{ minHeight: '84px', padding: '9px 8px', border: '2px solid rgba(17, 17, 17, 0.55)', borderRadius: '14px', background: `linear-gradient(180deg, ${GROUP_COLORS[index]}, white)`, boxShadow: '0 4px 10px rgba(17, 17, 17, 0.12)', overflow: 'hidden' }} onDragOver={(event) => { if (draggedClass) event.preventDefault(); }} onDrop={(event) => { event.preventDefault(); if (draggedClass) moveClassToGroup(draggedClass, index); setDraggedClass(null); }}>
+            <div style={levelGroupTitleStyle} contentEditable suppressContentEditableWarning onKeyDown={validateOnEnter}>{group.title}</div>
+            <div style={levelGroupClassesStyle}>{group.classes.length ? group.classes.map((className) => <span key={className} style={levelChipStyle} draggable onDragStart={(event) => { event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', className); setDraggedClass(className); }} onDragEnd={() => setDraggedClass(null)}>{className}</span>) : 'Déposer ici'}</div>
+          </div>)}
         </div>
         <footer className="cahier-footer"><span>Signature :</span><span>Observations :</span></footer>
       </div>
