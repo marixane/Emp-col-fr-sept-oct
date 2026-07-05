@@ -104,5 +104,7 @@ import './cahier-exam-events.css';
 import './cahier-exam-events.js';
 import './cahier-hide-empty-group-pages.js';
 import './cahier-fixed-five-entries.css';
+import './cahier-group-cover-pages.css';
+import './cahier-group-cover-pages.js';
 
 createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
