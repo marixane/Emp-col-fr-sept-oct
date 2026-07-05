@@ -22,7 +22,10 @@ const getCurrentCssText = () => Array.from(document.styleSheets)
     }
   })
   .filter(Boolean)
-  .join('\n');
+  .join('\n')
+  .replace(/<\/style/gi, '<\\/style');
+
+const wrapCssForPdf = (css) => `${'<' + 'style'}>${css}${'<' + '/style'}>`;
 
 const cloneA4PagesHtml = () => {
   const zone = document.querySelector('.cahier-preview-zone');
@@ -34,7 +37,7 @@ const cloneA4PagesHtml = () => {
     textarea.setAttribute('value', textarea.value);
   });
   clone.querySelectorAll('input').forEach((input) => input.setAttribute('value', input.value));
-  return clone.outerHTML;
+  return `${wrapCssForPdf(getCurrentCssText())}${clone.innerHTML}`;
 };
 
 const downloadBlob = (blob) => {
@@ -59,14 +62,13 @@ const downloadCahierPdf = async (button) => {
     await wait(250);
 
     const html = cloneA4PagesHtml();
-    const css = getCurrentCssText();
     if (!html) throw new Error('Pages A4 introuvables');
 
     setButtonStatus(button, 'Génération PDF...');
     const response = await fetch('/api/cahier-pdf', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ html, css, baseUrl: window.location.origin })
+      body: JSON.stringify({ html, baseUrl: window.location.origin })
     });
 
     if (!response.ok) {
