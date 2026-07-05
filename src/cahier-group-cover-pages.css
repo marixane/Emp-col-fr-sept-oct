@@ -168,6 +168,25 @@ body.cahier-tab-active .homework-entry:not(.cahier-exam-entry):not(.cahier-extra
   overflow: hidden !important;
 }
 
+body.cahier-tab-active .homework-entry:not(.cahier-exam-entry):not(.cahier-extra-holiday-entry) .homework-subject > div {
+  min-height: 20px !important;
+  max-height: 25px !important;
+  padding: 2px 6px !important;
+  gap: 4px !important;
+}
+
+body.cahier-tab-active .homework-entry:not(.cahier-exam-entry):not(.cahier-extra-holiday-entry) .homework-subject > div span:first-child {
+  min-width: 56px !important;
+  height: 18px !important;
+  font-size: 10px !important;
+}
+
+body.cahier-tab-active .homework-entry:not(.cahier-exam-entry):not(.cahier-extra-holiday-entry) .homework-subject > div span:nth-child(2) {
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+}
+
 @media print {
   body.cahier-tab-active .cahier-group-cover-page {
     page-break-after: always !important;
