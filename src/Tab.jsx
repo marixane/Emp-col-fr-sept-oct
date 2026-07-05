@@ -61,7 +61,7 @@ const sessionHourStyle = {
   borderRadius: '6px',
   background: 'var(--homework-color)',
   color: 'white',
-  fontSize: '11px',
+  fontSize: '12px',
   fontWeight: 900,
   whiteSpace: 'nowrap'
 };
