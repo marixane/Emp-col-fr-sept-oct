@@ -26,6 +26,16 @@ const dotTextStyle = {
   overflow: 'hidden'
 };
 
+const subjectTextStyle = {
+  whiteSpace: 'pre',
+  overflow: 'hidden',
+  textOverflow: 'clip',
+  fontSize: '18px',
+  lineHeight: 1.2,
+  paddingLeft: '10px',
+  paddingRight: '10px'
+};
+
 const getCellColor = (text) => {
   const normalized = String(text ?? '').toLowerCase().replace(/[\s-]/g, '').trim();
   if (!normalized) return 'white';
@@ -77,16 +87,18 @@ export default function Tab() {
   const updateRoom = (dayIndex, hour, value) => setRows((current) => current.map((row, i) => i === dayIndex ? { ...row, cells: { ...row.cells, [hour]: { ...normalizeCell(row.cells[hour]), room: clampRoom(value) } } } : row));
 
   const homeworkEntries = rows.slice(0, 5).map((row, index) => {
-    const filledHour = hours.find((hour) => {
+    const sessions = hours.reduce((list, hour) => {
       const cell = normalizeCell(row.cells[hour]);
-      return !cell.hidden && cell.text.trim();
-    });
-    const filledCell = filledHour ? normalizeCell(row.cells[filledHour]) : null;
+      if (!cell.hidden && cell.text.trim()) {
+        list.push(`${getHourStart(hour)}/${cell.text.trim()}`);
+      }
+      return list;
+    }, []);
     const dayNumber = String(index + 1).padStart(2, '0');
 
     return {
       date: `${String(row.day || DAYS[index]).toUpperCase()} ${dayNumber}/09`,
-      subject: filledCell ? `${getHourStart(filledHour)}\n${filledCell.text}` : '',
+      subject: sessions.join('\n'),
       text: DOT_TEXT,
       color: HOMEWORK_COLORS[index]
     };
@@ -224,7 +236,7 @@ export default function Tab() {
       <div className="a4-page cahier-page homework-page">
         {homeworkEntries.map((entry) => <section className="homework-entry" key={entry.date} style={{ '--homework-color': entry.color }}>
           <div className="homework-date" contentEditable suppressContentEditableWarning onKeyDown={validateOnEnter}>{entry.date}</div>
-          <div className="homework-content"><div className="homework-subject" contentEditable suppressContentEditableWarning onKeyDown={validateOnEnter}>{entry.subject}</div><div className="homework-text" contentEditable suppressContentEditableWarning onKeyDown={validateOnEnter} style={dotTextStyle}>{entry.text}</div></div>
+          <div className="homework-content"><div className="homework-subject" contentEditable suppressContentEditableWarning onKeyDown={validateOnEnter} style={entry.subject ? subjectTextStyle : undefined}>{entry.subject}</div><div className="homework-text" contentEditable suppressContentEditableWarning onKeyDown={validateOnEnter} style={dotTextStyle}>{entry.text}</div></div>
         </section>)}
       </div>
     </section>
