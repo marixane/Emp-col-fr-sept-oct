@@ -5,6 +5,8 @@ const applyExactCoverLogo = () => {
   const logo = document.querySelector('#cahier-cover-page img[alt="Logo Royaume du Maroc"]');
   if (!logo) return;
   if (logo.getAttribute('src') !== COVER_LOGO_PATH) logo.setAttribute('src', COVER_LOGO_PATH);
+  if (logo.dataset.exactCoverLogoApplied === 'true') return;
+  logo.dataset.exactCoverLogoApplied = 'true';
   logo.style.width = '96px';
   logo.style.height = 'auto';
   logo.style.objectFit = 'contain';
@@ -17,8 +19,7 @@ const applyExactCoverLogo = () => {
 };
 
 const applyCahierButtonOffset = () => {
-  const existing = document.getElementById('cahier-span-buttons-left-style');
-  if (existing) existing.remove();
+  if (document.getElementById('cahier-span-buttons-left-style')) return;
   const style = document.createElement('style');
   style.id = 'cahier-span-buttons-left-style';
   style.textContent = [
@@ -34,32 +35,40 @@ const applyCahierButtonOffset = () => {
 const clearCahierForcedScrollLock = () => {
   applyExactCoverLogo();
   applyCahierButtonOffset();
-  document.documentElement.style.overflow = '';
-  document.documentElement.style.height = '';
-  document.body.style.overflow = '';
-  document.body.style.height = '';
 
   const zone = document.querySelector('.cahier-preview-zone');
   const shell = document.querySelector('.cahier-shell');
 
+  if (document.documentElement.style.overflow) document.documentElement.style.overflow = '';
+  if (document.documentElement.style.height) document.documentElement.style.height = '';
+  if (document.body.style.overflow) document.body.style.overflow = '';
+  if (document.body.style.height) document.body.style.height = '';
+
   if (shell) {
-    shell.style.height = '';
-    shell.style.maxHeight = '';
-    shell.style.overflow = '';
+    if (shell.style.height) shell.style.height = '';
+    if (shell.style.maxHeight) shell.style.maxHeight = '';
+    if (shell.style.overflow) shell.style.overflow = '';
   }
 
   if (zone) {
-    zone.style.height = '';
-    zone.style.maxHeight = '';
-    zone.style.overflowY = '';
-    zone.style.overflowX = '';
-    zone.style.webkitOverflowScrolling = '';
-    zone.style.paddingBottom = '';
-    zone.style.scrollBehavior = '';
+    if (zone.style.height) zone.style.height = '';
+    if (zone.style.maxHeight) zone.style.maxHeight = '';
+    if (zone.style.overflowY) zone.style.overflowY = '';
+    if (zone.style.overflowX) zone.style.overflowX = '';
+    if (zone.style.webkitOverflowScrolling) zone.style.webkitOverflowScrolling = '';
+    if (zone.style.paddingBottom) zone.style.paddingBottom = '';
+    if (zone.style.scrollBehavior) zone.style.scrollBehavior = '';
   }
 };
 
-const scheduleClearCahierScrollLock = () => window.requestAnimationFrame(clearCahierForcedScrollLock);
+let cahierScrollRaf = 0;
+const scheduleClearCahierScrollLock = () => {
+  if (cahierScrollRaf) return;
+  cahierScrollRaf = window.requestAnimationFrame(() => {
+    cahierScrollRaf = 0;
+    clearCahierForcedScrollLock();
+  });
+};
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', scheduleClearCahierScrollLock, { once: true });
@@ -67,12 +76,12 @@ if (document.readyState === 'loading') {
   scheduleClearCahierScrollLock();
 }
 
-window.addEventListener('resize', scheduleClearCahierScrollLock);
-window.addEventListener('orientationchange', scheduleClearCahierScrollLock);
+window.addEventListener('resize', scheduleClearCahierScrollLock, { passive: true });
+window.addEventListener('orientationchange', scheduleClearCahierScrollLock, { passive: true });
 
 new MutationObserver(scheduleClearCahierScrollLock).observe(document.body, {
   childList: true,
   subtree: true,
   attributes: true,
-  attributeFilter: ['class', 'style']
+  attributeFilter: ['class']
 });
