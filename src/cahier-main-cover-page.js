@@ -11,6 +11,7 @@ const createCoverPage = () => {
   const page = document.createElement('div');
   page.id = COVER_ID;
   page.className = 'a4-page cahier-page cahier-main-cover-page';
+  page.dataset.forceFirstPage = 'true';
   page.innerHTML = `
     <div class="cahier-cover-top-pattern"></div>
     <div class="cahier-cover-ministry">
@@ -61,25 +62,30 @@ const updateCoverClasses = (page) => {
 const applyCoverPage = () => {
   const zone = document.querySelector('.cahier-preview-zone');
   if (!zone) return;
+
   let page = document.getElementById(COVER_ID);
-  if (!page) {
-    page = createCoverPage();
-    zone.prepend(page);
-  }
-  if (zone.firstElementChild !== page) zone.prepend(page);
+  if (!page) page = createCoverPage();
+
+  if (zone.firstElementChild !== page) zone.insertBefore(page, zone.firstElementChild);
+  page.style.display = '';
+  page.hidden = false;
   updateCoverClasses(page);
 };
 
 const scheduleCoverPage = () => window.requestAnimationFrame(applyCoverPage);
+const scheduleCoverPageTwice = () => {
+  scheduleCoverPage();
+  window.setTimeout(scheduleCoverPage, 120);
+};
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', scheduleCoverPage, { once: true });
+  document.addEventListener('DOMContentLoaded', scheduleCoverPageTwice, { once: true });
 } else {
-  scheduleCoverPage();
+  scheduleCoverPageTwice();
 }
 
-document.addEventListener('focusout', scheduleCoverPage, true);
-document.addEventListener('drop', scheduleCoverPage, true);
+document.addEventListener('focusout', scheduleCoverPageTwice, true);
+document.addEventListener('drop', scheduleCoverPageTwice, true);
 document.addEventListener('click', (event) => {
-  if (event.target?.closest?.('.timetable-table, .span-tools, .cahier-tab')) scheduleCoverPage();
+  if (event.target?.closest?.('.timetable-table, .span-tools, .cahier-tab, .cahier-preview-zone')) scheduleCoverPageTwice();
 }, true);
