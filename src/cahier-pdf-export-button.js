@@ -2,21 +2,25 @@ const PDF_BUTTON_ID = 'cahier-pdf-export-button';
 
 const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
 
-const A4_WIDTH = 794;
-const A4_HEIGHT = 1123;
+const A4_WIDTH_PX = 794;
+const A4_HEIGHT_PX = 1123;
+const A4_WIDTH_CSS = '210mm';
+const A4_HEIGHT_CSS = '297mm';
 
 const PDF_EXPORT_CSS = `
-  @page { size: ${A4_WIDTH}px ${A4_HEIGHT}px; margin: 0; }
-  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  @page { size: ${A4_WIDTH_CSS} ${A4_HEIGHT_CSS}; margin: 0; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-sizing: border-box !important; }
   html, body {
-    width: ${A4_WIDTH}px !important;
+    width: ${A4_WIDTH_CSS} !important;
     margin: 0 !important;
     padding: 0 !important;
     background: white !important;
     overflow: visible !important;
   }
   #root, .app-shell, .cahier-shell, .clean-cahier-shell, .cahier-preview-zone {
-    width: ${A4_WIDTH}px !important;
+    width: ${A4_WIDTH_CSS} !important;
+    min-width: ${A4_WIDTH_CSS} !important;
+    max-width: ${A4_WIDTH_CSS} !important;
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
@@ -24,22 +28,26 @@ const PDF_EXPORT_CSS = `
     padding: 0 !important;
     overflow: visible !important;
     background: white !important;
+    transform: none !important;
+    zoom: 1 !important;
   }
   .cahier-preview-zone {
     display: block !important;
+    gap: 0 !important;
   }
   .a4-page, .cahier-page {
     display: block !important;
     position: relative !important;
-    width: ${A4_WIDTH}px !important;
-    min-width: ${A4_WIDTH}px !important;
-    max-width: ${A4_WIDTH}px !important;
-    height: ${A4_HEIGHT}px !important;
-    min-height: ${A4_HEIGHT}px !important;
-    max-height: ${A4_HEIGHT}px !important;
+    width: ${A4_WIDTH_CSS} !important;
+    min-width: ${A4_WIDTH_CSS} !important;
+    max-width: ${A4_WIDTH_CSS} !important;
+    height: ${A4_HEIGHT_CSS} !important;
+    min-height: ${A4_HEIGHT_CSS} !important;
+    max-height: ${A4_HEIGHT_CSS} !important;
     margin: 0 !important;
-    padding: 0 !important;
     transform: none !important;
+    scale: 1 !important;
+    translate: 0 0 !important;
     zoom: 1 !important;
     overflow: hidden !important;
     break-after: page !important;
@@ -120,6 +128,24 @@ const shouldExportPage = (page, filledGroupColors) => {
   return filledGroupColors.has(getHomeworkPageColor(page));
 };
 
+const lockCloneToA4 = (page) => {
+  page.classList.add('cahier-pdf-page');
+  page.style.setProperty('width', A4_WIDTH_CSS, 'important');
+  page.style.setProperty('height', A4_HEIGHT_CSS, 'important');
+  page.style.setProperty('min-width', A4_WIDTH_CSS, 'important');
+  page.style.setProperty('min-height', A4_HEIGHT_CSS, 'important');
+  page.style.setProperty('max-width', A4_WIDTH_CSS, 'important');
+  page.style.setProperty('max-height', A4_HEIGHT_CSS, 'important');
+  page.style.setProperty('margin', '0', 'important');
+  page.style.setProperty('transform', 'none', 'important');
+  page.style.setProperty('scale', '1', 'important');
+  page.style.setProperty('translate', '0 0', 'important');
+  page.style.setProperty('zoom', '1', 'important');
+  page.style.setProperty('overflow', 'hidden', 'important');
+  page.dataset.pdfWidthPx = String(A4_WIDTH_PX);
+  page.dataset.pdfHeightPx = String(A4_HEIGHT_PX);
+};
+
 const prepareCloneInputs = (root) => {
   root.querySelectorAll(`#${PDF_BUTTON_ID}, script, style, link`).forEach((node) => node.remove());
   root.querySelectorAll('textarea').forEach((textarea) => {
@@ -140,11 +166,17 @@ const cloneA4PagesHtml = () => {
 
   const exportZone = document.createElement('div');
   exportZone.className = 'cahier-preview-zone';
+  exportZone.style.setProperty('width', A4_WIDTH_CSS, 'important');
+  exportZone.style.setProperty('margin', '0', 'important');
+  exportZone.style.setProperty('padding', '0', 'important');
+  exportZone.style.setProperty('display', 'block', 'important');
+  exportZone.style.setProperty('overflow', 'visible', 'important');
 
   if (pages.length) {
     pages.forEach((page) => {
       const clone = page.cloneNode(true);
       prepareCloneInputs(clone);
+      lockCloneToA4(clone);
       exportZone.append(clone);
     });
   } else {
