@@ -96,6 +96,7 @@ import './cahier-session-fit.css';
 import './cahier-session-duration.js';
 import './cahier-first-page-clean.css';
 import './cahier-table-exams-polish.css';
+import './cahier-auto-fit-many-classes.css';
 // Désactivé : ce guard DOM peut bloquer Safari pendant la saisie.
 // import './cahier-hide-holiday-session-duplicates.js';
 
