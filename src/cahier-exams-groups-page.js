@@ -1,14 +1,19 @@
 const SECOND_PAGE_ID = 'cahier-exams-groups-page';
 
-const makeSecondPage = () => {
-  const firstPage = document.querySelector('.cahier-preview-zone > .a4-page.cahier-page:not(.homework-cover-page):not(.homework-page):not(#cahier-main-cover-page)');
-  if (!firstPage) return;
+const findTimetablePage = () => document.querySelector('.timetable-table')?.closest?.('.a4-page.cahier-page');
 
-  const examList = firstPage.querySelector('.cahier-exams-list');
-  const groups = Array.from(firstPage.children).find((node) => {
-    const style = node.getAttribute('style') || '';
-    return style.includes('grid-template-columns') && style.includes('repeat(3, 1fr)');
-  });
+const findGroupsBlock = (page) => Array.from(page?.children || []).find((node) => {
+  if (node.querySelector?.('.cahier-exams-list, .timetable-table')) return false;
+  const text = String(node.textContent || '').toUpperCase();
+  return text.includes('TRONC COMMUN') && text.includes('1ÈRES BAC') && text.includes('2ÈME BAC');
+});
+
+const makeSecondPage = () => {
+  const timetablePage = findTimetablePage();
+  if (!timetablePage) return;
+
+  const examList = timetablePage.querySelector('.cahier-exams-list');
+  const groups = findGroupsBlock(timetablePage);
   if (!examList || !groups) return;
 
   document.getElementById(SECOND_PAGE_ID)?.remove();
@@ -19,20 +24,25 @@ const makeSecondPage = () => {
 
   const title = document.createElement('div');
   title.className = 'cahier-exams-groups-main-title';
-  title.textContent = 'Cahier de texte';
+  title.textContent = 'Liste des examens et groupes';
   page.append(title);
 
   const examClone = examList.cloneNode(true);
   const groupsClone = groups.cloneNode(true);
+  examClone.style.display = '';
+  groupsClone.style.display = '';
   page.append(examClone, groupsClone);
 
-  firstPage.insertAdjacentElement('afterend', page);
+  timetablePage.insertAdjacentElement('afterend', page);
 
-  examList.style.display = 'none';
-  groups.style.display = 'none';
+  examList.style.setProperty('display', 'none', 'important');
+  groups.style.setProperty('display', 'none', 'important');
 };
 
-const scheduleSecondPage = () => window.requestAnimationFrame(makeSecondPage);
+const scheduleSecondPage = () => {
+  window.requestAnimationFrame(makeSecondPage);
+  window.setTimeout(makeSecondPage, 120);
+};
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', scheduleSecondPage, { once: true });
