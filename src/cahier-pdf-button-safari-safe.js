@@ -181,6 +181,52 @@ const ensurePdfIncludesJuly10 = (zone) => {
   zone.append(makeExitPage(lastHomeworkPage));
 };
 
+
+const stretchHomeworkPagesForPdf = (zone) => {
+  zone.querySelectorAll('.homework-page').forEach((page) => {
+    const entries = Array.from(page.children).filter((element) =>
+      element.classList?.contains('homework-entry')
+    );
+
+    if (!entries.length) return;
+
+    const pageHeight = 1123;
+    const headerSpace = 90;
+    const bottomSpace = 25;
+    const availableHeight = pageHeight - headerSpace - bottomSpace;
+    const entryHeight = Math.floor(availableHeight / entries.length);
+
+    entries.forEach((entry, index) => {
+      const height = index === entries.length - 1
+        ? availableHeight - entryHeight * (entries.length - 1)
+        : entryHeight;
+
+      entry.style.setProperty('height', `${height}px`, 'important');
+      entry.style.setProperty('min-height', `${height}px`, 'important');
+      entry.style.setProperty('max-height', `${height}px`, 'important');
+      entry.style.setProperty('margin', '0', 'important');
+      entry.style.setProperty('box-sizing', 'border-box', 'important');
+
+      const date = entry.querySelector('.homework-date');
+      const content = entry.querySelector('.homework-content');
+
+      if (date && content) {
+        const dateHeight = 54;
+        content.style.setProperty(
+          'height',
+          `${Math.max(height - dateHeight, 20)}px`,
+          'important'
+        );
+        content.style.setProperty(
+          'min-height',
+          `${Math.max(height - dateHeight, 20)}px`,
+          'important'
+        );
+      }
+    });
+  });
+};
+
 const buildExportHtml = () => {
   const pages = Array.from(document.querySelectorAll('.cahier-preview-zone .a4-page, .cahier-preview-zone .cahier-page')).filter((page) => {
     const rect = page.getBoundingClientRect();
@@ -204,6 +250,7 @@ const buildExportHtml = () => {
   });
 
   applySessionDurationsForPdf(zone);
+  stretchHomeworkPagesForPdf(zone);
   removeAfterJuly10(zone);
   appendExitPageForEachGroup(zone);
   ensurePdfIncludesJuly10(zone);
