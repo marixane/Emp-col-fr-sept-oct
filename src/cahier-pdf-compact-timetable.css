@@ -18,15 +18,17 @@
 }
 
 @media print {
-  body.compact-timetable-pdf .timetable-table {
+  .timetable-table.compact-pdf-hours {
     width: 82% !important;
     margin-left: auto !important;
     margin-right: auto !important;
     table-layout: fixed !important;
   }
 
-  body.compact-timetable-pdf .timetable-table thead th:nth-last-child(-n+2),
-  body.compact-timetable-pdf .timetable-table tbody tr > td:nth-last-child(-n+2) {
+  .timetable-table.compact-pdf-hours thead th:nth-child(6),
+  .timetable-table.compact-pdf-hours thead th:nth-child(7),
+  .timetable-table.compact-pdf-hours tbody tr > td:nth-child(6),
+  .timetable-table.compact-pdf-hours tbody tr > td:nth-child(7) {
     display: none !important;
   }
 }
