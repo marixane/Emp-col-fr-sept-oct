@@ -3,32 +3,27 @@ const resizeClassLabels = () => {
 
   document.querySelectorAll('.homework-subject > div').forEach((line) => {
     const label = line.querySelector('span:nth-child(2)');
-    const duration = line.querySelector('.cahier-session-duration');
-    if (!label || !duration) return;
+    if (!label) return;
 
     const count = line.parentElement?.children?.length || 1;
     const startSize = count >= 4 ? 18 : count === 3 ? 22 : 26;
-    const minSize = 4;
+    const minSize = 6;
 
+    label.style.removeProperty('width');
+    label.style.removeProperty('max-width');
+    label.style.setProperty('min-width', '0', 'important');
     label.style.setProperty('font-weight', '900', 'important');
     label.style.setProperty('transform', 'none', 'important');
-    label.style.setProperty('transform-origin', 'left center', 'important');
     label.style.setProperty('overflow', 'hidden', 'important');
     label.style.setProperty('text-overflow', 'clip', 'important');
     label.style.setProperty('white-space', 'nowrap', 'important');
 
     const styles = getComputedStyle(label);
-    const paddingLeft = parseFloat(styles.paddingLeft || 0);
-    const paddingRight = parseFloat(styles.paddingRight || 0);
-    const labelRect = label.getBoundingClientRect();
-    const durationRect = duration.getBoundingClientRect();
-    const availableWidth = Math.max(durationRect.left - labelRect.left - paddingLeft - paddingRight - 4, 0);
-
-    label.style.setProperty('width', `${Math.max(availableWidth + paddingLeft + paddingRight, 0)}px`, 'important');
-    label.style.setProperty('max-width', `${Math.max(availableWidth + paddingLeft + paddingRight, 0)}px`, 'important');
-
+    const padding = parseFloat(styles.paddingLeft || 0) + parseFloat(styles.paddingRight || 0);
+    const availableWidth = Math.max(label.clientWidth - padding - 2, 0);
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
+
     let size = startSize;
     label.style.setProperty('font-size', `${size}px`, 'important');
 
