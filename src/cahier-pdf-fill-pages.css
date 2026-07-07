@@ -65,7 +65,8 @@
     white-space: pre-wrap !important;
   }
 
-  .homework-page .cahier-exam-entry .homework-text {
+  .homework-page .cahier-exam-entry .homework-text,
+  .homework-page .cahier-extra-holiday-entry .homework-text {
     width: calc(100% - 36px) !important;
     height: calc(100% - 16px) !important;
     min-height: 0 !important;
