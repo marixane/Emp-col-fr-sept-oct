@@ -66,16 +66,16 @@
   }
 
   .homework-page .cahier-exam-entry .homework-text {
-    width: calc(100% - 18mm) !important;
-    height: auto !important;
-    min-height: 62px !important;
-    max-height: 110px !important;
-    margin: auto 9mm !important;
-    padding: 10px 14px !important;
-    align-self: center !important;
+    width: calc(100% - 36px) !important;
+    height: calc(100% - 16px) !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 8px 18px !important;
+    padding: 10px 16px !important;
+    align-self: stretch !important;
     font-size: 22px !important;
     line-height: 1.25 !important;
     letter-spacing: 0.8px !important;
-    border-radius: 10px !important;
+    border-radius: 12px !important;
   }
 }
