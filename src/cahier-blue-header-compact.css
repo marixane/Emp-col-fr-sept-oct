@@ -4,9 +4,19 @@
 
 input[placeholder="Classe"],
 textarea[placeholder="Classe"] {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box !important;
   font-size: 14px !important;
+  line-height: normal !important;
   text-align: center !important;
+  text-align-last: center !important;
   font-weight: 700 !important;
+  direction: ltr !important;
 }
 
 input[placeholder="Classe"]::placeholder,
@@ -22,8 +32,18 @@ textarea[placeholder="Classe"]::placeholder {
 
   input[placeholder="Classe"],
   textarea[placeholder="Classe"] {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box !important;
     font-size: 14px !important;
+    line-height: normal !important;
     text-align: center !important;
+    text-align-last: center !important;
+    direction: ltr !important;
   }
 
   input[placeholder="Classe"]::placeholder,
