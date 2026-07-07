@@ -1,0 +1,20 @@
+.cahier-preview-zone > .cahier-page:not(.homework-page):not(.homework-cover-page) {
+  position: relative;
+}
+
+.cahier-preview-zone > .cahier-page:not(.homework-page):not(.homework-cover-page) .total-hours-control {
+  position: absolute !important;
+  left: 50% !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: 18px !important;
+  z-index: 5;
+  margin: 0 !important;
+  transform: translateX(-50%) !important;
+}
+
+@media print {
+  .cahier-preview-zone > .cahier-page:not(.homework-page):not(.homework-cover-page) .total-hours-control {
+    bottom: 10mm !important;
+  }
+}
