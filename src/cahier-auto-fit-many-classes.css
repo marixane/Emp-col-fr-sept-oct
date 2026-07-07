@@ -71,15 +71,15 @@
 .homework-page .homework-subject > div > span:first-child {
   min-width: 66px !important;
   height: 26px !important;
-  font-size: 20px !important;
+  font-size: 16px !important;
 }
 
 .homework-page .homework-subject > div > span:nth-child(2) {
-  font-size: 20px !important;
+  font-size: 18px !important;
 }
 
 .homework-page .cahier-session-duration {
-  font-size: 15px !important;
+  font-size: 12px !important;
 }
 
 /* 3 classes : taille intermédiaire */
@@ -92,15 +92,15 @@
 .homework-page .homework-subject:has(> div:nth-child(3)) > div > span:first-child {
   min-width: 60px !important;
   height: 23px !important;
-  font-size: 15px !important;
+  font-size: 14px !important;
 }
 
 .homework-page .homework-subject:has(> div:nth-child(3)) > div > span:nth-child(2) {
-  font-size: 18px !important;
+  font-size: 16px !important;
 }
 
 .homework-page .homework-subject:has(> div:nth-child(3)) .cahier-session-duration {
-  font-size: 13px !important;
+  font-size: 11px !important;
 }
 
 /* 4 classes ou plus : compact */
