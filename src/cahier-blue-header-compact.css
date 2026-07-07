@@ -53,6 +53,13 @@ textarea[placeholder="Classe"]::placeholder {
   text-align: center !important;
 }
 
+.timetable-table thead th:first-child {
+  color: transparent !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
 @media print {
   input[placeholder="Classe"],
   textarea[placeholder="Classe"] {
@@ -92,5 +99,12 @@ textarea[placeholder="Classe"]::placeholder {
     margin: 0 !important;
     padding: 0 !important;
     text-align: center !important;
+  }
+
+  .timetable-table thead th:first-child {
+    color: transparent !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
   }
 }
