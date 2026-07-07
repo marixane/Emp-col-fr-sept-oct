@@ -9,6 +9,11 @@ const tagHomeworkProgressBars = () => {
       header.style.height = '30px';
       header.style.padding = '0 14px';
       header.style.borderRadius = '10px';
+      header.style.width = '620px';
+      header.style.left = '50%';
+      header.style.right = 'auto';
+      header.style.transform = 'translateX(-50%)';
+      header.style.boxSizing = 'border-box';
     }
 
     if (progressWrap) {
