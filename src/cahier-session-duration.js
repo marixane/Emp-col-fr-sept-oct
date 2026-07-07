@@ -52,7 +52,7 @@ const fitClassLabel = (node) => {
 
   const line = node.parentElement;
   const classCount = line?.parentElement?.children?.length || 1;
-  const initialSize = classCount >= 4 ? 13 : classCount === 3 ? 15 : 16;
+  const initialSize = classCount >= 4 ? 14 : classCount === 3 ? 16 : 17;
   node.style.setProperty('font-size', `${initialSize}px`, 'important');
 
   let size = initialSize;
