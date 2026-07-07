@@ -9,7 +9,7 @@
   position: static !important;
   clear: both !important;
   transform: none !important;
-  margin-top: 24px !important;
+  margin-top: 140px !important;
 }
 
 @media print {
@@ -24,6 +24,6 @@
     position: static !important;
     clear: both !important;
     transform: none !important;
-    margin-top: 24px !important;
+    margin-top: 140px !important;
   }
 }
