@@ -4,34 +4,6 @@
     transform: translateX(25px) !important;
   }
 
-  .homework-page > div:first-child {
-    height: 30px !important;
-    min-height: 30px !important;
-    max-height: 30px !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    border-radius: 10px !important;
-    box-sizing: border-box !important;
-  }
-
-  .homework-page > div:first-child > div:nth-child(2) {
-    display: grid !important;
-    grid-template-columns: 280px 46px !important;
-    width: 336px !important;
-    min-width: 336px !important;
-    max-width: 336px !important;
-    justify-self: center !important;
-    align-items: center !important;
-    gap: 10px !important;
-  }
-
-  .homework-page > div:first-child > div:nth-child(2) > div:first-child {
-    width: 280px !important;
-    min-width: 280px !important;
-    max-width: 280px !important;
-    margin: 0 !important;
-  }
-
   .homework-page {
     display: flex !important;
     flex-direction: column !important;
