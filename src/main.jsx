@@ -114,7 +114,8 @@ import './cahier-exams-groups-page.js';
 // Il ne modifie les pages qu'au moment de générer le PDF.
 import './cahier-pdf-button-safari-safe.js';
 import './cahier-progress-bar-class.js';
-import './cahier-pdf-progress-inline.js';
+// Désactivé : cet ancien helper annulait les nouvelles dimensions de la barre dans le PDF.
+// import './cahier-pdf-progress-inline.js';
 import './cahier-pdf-class-size-fix.js';
 import './cahier-pdf-fill-pages.css';
 
