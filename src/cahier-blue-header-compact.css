@@ -1,0 +1,21 @@
+.homework-page > div[style*="background: var(--group-color)"] {
+  height: 24px !important;
+  min-height: 24px !important;
+  max-height: 24px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border-radius: 8px !important;
+  box-sizing: border-box !important;
+}
+
+@media print {
+  .homework-page > div[style*="background: var(--group-color)"] {
+    height: 24px !important;
+    min-height: 24px !important;
+    max-height: 24px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
+  }
+}
