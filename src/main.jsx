@@ -143,5 +143,6 @@ import './cahier-pages-2-3-down.css';
 // import './cahier-hide-empty-group-pages.js';
 // import './cahier-july-complete.js';
 import './cahier-college-group-titles.js';
+import './cahier-total-hours-bottom.css';
 
 createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
