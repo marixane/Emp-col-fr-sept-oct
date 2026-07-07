@@ -2,8 +2,21 @@
   transform: translateX(100px) !important;
 }
 
+.timetable-cell-content.colored-cell textarea {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+}
+
+.timetable-cell-content:not(.colored-cell) textarea {
+  color: transparent !important;
+}
+
 @media print {
   .homework-page > div:first-child > div:first-child {
     transform: translateX(100px) !important;
+  }
+
+  .timetable-cell-content.colored-cell textarea {
+    font-size: 18px !important;
   }
 }
