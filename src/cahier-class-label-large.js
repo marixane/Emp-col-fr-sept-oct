@@ -6,7 +6,7 @@ const resizeClassLabels = () => {
     if (!label) return;
 
     const count = line.parentElement?.children?.length || 1;
-    const size = count >= 4 ? 18 : count === 3 ? 22 : 26;
+    const size = count >= 4 ? 13 : count === 3 ? 17 : 21;
 
     label.style.setProperty('font-size', `${size}px`, 'important');
     label.style.setProperty('font-weight', '900', 'important');
