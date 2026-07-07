@@ -20,17 +20,21 @@ window.fetch = async (input, init = {}) => {
 
       if (!progressWrap || !progressBar) return;
 
-      progressWrap.style.setProperty('width', '100%', 'important');
-      progressWrap.style.setProperty('display', 'flex', 'important');
+      progressWrap.style.setProperty('display', 'grid', 'important');
+      progressWrap.style.setProperty('grid-template-columns', '300px 46px', 'important');
+      progressWrap.style.setProperty('width', '356px', 'important');
+      progressWrap.style.setProperty('min-width', '356px', 'important');
+      progressWrap.style.setProperty('max-width', '356px', 'important');
+      progressWrap.style.setProperty('justify-self', 'center', 'important');
       progressWrap.style.setProperty('align-items', 'center', 'important');
-      progressWrap.style.setProperty('justify-content', 'center', 'important');
+      progressWrap.style.setProperty('gap', '10px', 'important');
 
-      progressBar.style.setProperty('width', '75%', 'important');
-      progressBar.style.setProperty('min-width', '0', 'important');
-      progressBar.style.setProperty('max-width', '75%', 'important');
-      progressBar.style.setProperty('flex', '0 0 75%', 'important');
-      progressBar.style.setProperty('margin-left', 'auto', 'important');
-      progressBar.style.setProperty('margin-right', 'auto', 'important');
+      progressBar.style.setProperty('width', '300px', 'important');
+      progressBar.style.setProperty('min-width', '300px', 'important');
+      progressBar.style.setProperty('max-width', '300px', 'important');
+      progressBar.style.setProperty('flex', 'none', 'important');
+      progressBar.style.setProperty('margin-left', '0', 'important');
+      progressBar.style.setProperty('margin-right', '0', 'important');
     });
 
     payload.html = pdfDocument.documentElement.outerHTML;
