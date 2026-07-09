@@ -52,7 +52,7 @@ export default function App() {
         z-index: 10 !important;
       }
 
-      .cahier-page > div[style*="grid-template-columns: repeat(3, 1fr)"] {
+      .cahier-page:not(.cahier-exams-groups-page) > div[style*="grid-template-columns: repeat(3, 1fr)"] {
         margin-top: 96px !important;
       }
     `}</style>
