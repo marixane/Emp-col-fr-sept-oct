@@ -13,6 +13,10 @@ export default function App() {
 
   return <>
     <style>{`
+      .timetable-table {
+        transform: translateY(-24px);
+      }
+
       .cahier-page > div[style*="grid-template-columns: repeat(3, 1fr)"] {
         margin-top: 96px !important;
       }
