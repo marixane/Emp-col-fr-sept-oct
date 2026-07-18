@@ -472,13 +472,21 @@ const createButtons = () => {
   downloadButton.textContent = 'Télécharger PDF';
   downloadButton.title = 'Télécharger toutes les pages A4 en PDF';
   styleButton(downloadButton, 'right');
-  downloadButton.addEventListener('click', () => exportPdf(downloadButton, 'download'));
+  downloadButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if (!downloadButton.disabled) exportPdf(downloadButton, 'download');
+  }, true);
 
   const previewButton = freshButton(PDF_PREVIEW_BUTTON_ID);
   previewButton.textContent = 'Voir PDF';
   previewButton.title = 'Générer et ouvrir toutes les pages A4 dans un nouvel onglet';
   styleButton(previewButton, 'left');
-  previewButton.addEventListener('click', () => exportPdf(previewButton, 'preview'));
+  previewButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if (!previewButton.disabled) exportPdf(previewButton, 'preview');
+  }, true);
 };
 
 if (document.readyState === 'loading') {
