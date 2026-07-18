@@ -99,20 +99,18 @@ export default function TabStable() {
   const [teacher, setTeacher] = useState('Professeur :');
   const [hours, setHours] = useState(HOURS);
   const [rows, setRows] = useState(createRows);
-  const [generatedRows, setGeneratedRows] = useState(createRows);
-  const [generatedHours, setGeneratedHours] = useState(HOURS);
-  const [version, setVersion] = useState(0);
   const schoolYear = getSchoolYear();
 
   const validateOnEnter = (event) => { if (event.key === 'Enter') { event.preventDefault(); event.currentTarget.blur(); } };
   const updateCellText = (dayIndex, hour, value) => setRows((current) => current.map((row, index) => index === dayIndex ? { ...row, cells: { ...row.cells, [hour]: { ...row.cells[hour], text: value } } } : row));
   const updateRoom = (dayIndex, hour, value) => setRows((current) => current.map((row, index) => index === dayIndex ? { ...row, cells: { ...row.cells, [hour]: { ...row.cells[hour], room: value } } } : row));
-  const generatePages = () => { setGeneratedRows(JSON.parse(JSON.stringify(rows))); setGeneratedHours([...hours]); setVersion((value) => value + 1); };
-
   const tableClasses = rows.reduce((classes, row) => { hours.forEach((hour) => { const text = normalize(row.cells[hour]?.text); if (text && !classes.includes(text)) classes.push(text); }); return classes; }, []);
   const classGroups = GROUP_TITLES.map((title) => ({ title, classes: [] }));
   tableClasses.forEach((className) => classGroups[getClassLevel(className)].classes.push(className));
-  const homeworkGroups = useMemo(() => buildHomeworkGroups(generatedRows, generatedHours), [generatedRows, generatedHours, version]);
+  // Les pages cachées suivent toujours le tableau courant. Ainsi « Voir PDF »
+  // et « Télécharger PDF » exportent exactement les données visibles, sans
+  // nécessiter un bouton intermédiaire de génération.
+  const homeworkGroups = useMemo(() => buildHomeworkGroups(rows, hours), [rows, hours]);
   const totalHours = rows.reduce((total, row) => total + hours.reduce((sub, hour) => sub + (normalize(row.cells[hour]?.text) ? 1 : 0), 0), 0);
 
   return <main className="cahier-shell clean-cahier-shell">
