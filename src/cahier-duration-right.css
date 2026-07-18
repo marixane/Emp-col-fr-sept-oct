@@ -17,12 +17,15 @@
 
 .homework-subject > div > span:nth-child(2),
 .cahier-preview-zone .homework-subject > div > span:nth-child(2) {
-  width: calc(100% + 10px) !important;
-  max-width: calc(100% + 10px) !important;
+  width: 100% !important;
+  max-width: 100% !important;
   min-width: 0 !important;
-  overflow: hidden !important;
+  overflow: visible !important;
   text-overflow: clip !important;
   white-space: nowrap !important;
+  font-size: 13px !important;
+  line-height: 1.05 !important;
+  text-align: center !important;
 }
 
 .cahier-session-duration,
