@@ -132,16 +132,6 @@ const prepareClone = (clone) => {
     textarea.setAttribute('value', textarea.value);
   });
   clone.querySelectorAll('input').forEach((input) => input.setAttribute('value', input.value));
-  clone.querySelectorAll('.cahier-extra-holiday-entry .homework-text, .cahier-exam-entry .homework-text').forEach((box) => {
-    box.style.setProperty('box-sizing', 'border-box', 'important');
-    box.style.setProperty('align-self', 'center', 'important');
-    box.style.setProperty('width', 'calc(100% - 56px)', 'important');
-    box.style.setProperty('height', '88px', 'important');
-    box.style.setProperty('min-height', '88px', 'important');
-    box.style.setProperty('max-height', '88px', 'important');
-    box.style.setProperty('margin', 'auto 28px', 'important');
-    box.style.setProperty('border-radius', '12px', 'important');
-  });
   clone.style.setProperty('width', A4_WIDTH, 'important');
   clone.style.setProperty('height', A4_HEIGHT, 'important');
   clone.style.setProperty('margin', '0', 'important');
@@ -288,7 +278,10 @@ const waitForLatestTimetable = async () => {
     activeElement.blur();
   }
 
-  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  // Laisser React et les corrections de mise en page terminer leur rendu avant
+  // de copier le DOM. Le PDF correspond alors exactement au tableau courant.
+  await new Promise((resolve) => window.setTimeout(resolve, 80));
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 };
 
 const buildExportHtml = () => {
@@ -312,12 +305,8 @@ const buildExportHtml = () => {
     zone.append(clone);
   });
 
-  prepareCompactTimetablesForPdf(zone);
-  applySessionDurationsForPdf(zone);
-  removeAfterJuly10(zone);
-  // Projet Collèges : aucune entrée bleue administrative ajoutée automatiquement.
-  applyFullYearsForPdf(zone);
-  keepReferencePagesLast(zone);
+  // Ne pas retraiter ici une ancienne variante des pages : les clones viennent
+  // directement de l'interface corrigée et conservent son ordre et son style.
 
   return `<style>${getCss()}\n${EXPORT_CSS}</style>${zone.outerHTML}`;
 };
@@ -325,6 +314,7 @@ const buildExportHtml = () => {
 const requestPdfChunk = async (html) => {
   const response = await fetch('/api/cahier-pdf', {
     method: 'POST',
+    cache: 'no-store',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ html, baseUrl: window.location.origin })
   });
