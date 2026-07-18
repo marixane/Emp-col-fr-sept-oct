@@ -609,3 +609,14 @@ body .cover-page-shell .cover-page-only:last-child {
     overflow: hidden;
   }
 }
+
+
+/* Interface : afficher uniquement la couverture et l'emploi du temps.
+   Les pages générées restent hors écran et sont incluses dans le PDF. */
+body.cahier-tab-active .clean-cahier-shell:not(.cover-page-shell) .cahier-preview-zone > .a4-page:not(:has(.timetable-table)) {
+  position: fixed !important;
+  left: -100000px !important;
+  top: 0 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+}
