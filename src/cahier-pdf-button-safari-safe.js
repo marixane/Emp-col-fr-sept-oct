@@ -391,32 +391,13 @@ const showPreviewLoading = (previewWindow) => {
   previewWindow.document.close();
 };
 
-const showInstantHtmlPreview = (previewWindow, html) => {
-  previewWindow.document.open();
-  previewWindow.document.write(`<!doctype html>
-    <html lang="fr">
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>Aperçu PDF</title>
-      </head>
-      <body class="cahier-tab-active cahier-instant-preview">
-        ${html}
-        <style>
-          html,body{margin:0!important;padding:0!important;min-height:100%!important;background:#242a33!important;overflow:auto!important}
-          body{padding:22px 0!important}
-          .cahier-preview-zone{display:block!important;margin:0 auto!important;overflow:visible!important;height:auto!important;max-height:none!important}
-          .cahier-preview-zone>.a4-page,.cahier-preview-zone>.cahier-page{
-            display:block!important;position:relative!important;left:auto!important;top:auto!important;
-            margin:0 auto 22px!important;box-shadow:0 10px 30px rgba(0,0,0,.38)!important;
-            visibility:visible!important;opacity:1!important;pointer-events:none!important
-          }
-          button,.no-print{display:none!important}
-        </style>
-      </body>
-    </html>`);
-  previewWindow.document.close();
-  previewWindow.focus();
+const setPreviewStatus = (previewWindow, message) => {
+  try {
+    const status = previewWindow?.document?.getElementById('status');
+    if (status) status.textContent = message;
+  } catch {
+    // La fenêtre peut être en cours de changement de document.
+  }
 };
 
 const submitPreviewForm = (html, previewWindow) => {
@@ -488,13 +469,19 @@ const exportPdf = async (button, mode = 'download') => {
 
     if (mode === 'preview') {
       const html = buildExportHtml();
-      button.textContent = 'Ouverture aperçu...';
-      showInstantHtmlPreview(previewWindow, html);
-      button.textContent = 'Aperçu ouvert';
+      button.textContent = 'Génération PDF...';
+      setPreviewStatus(previewWindow, 'Génération du PDF…');
+      // Même fabrication que « Télécharger PDF » : le serveur retourne le
+      // véritable fichier PDF. Seule l'action finale devient un affichage.
+      const bytes = await requestPdfChunk(html);
+      button.textContent = 'Ouverture PDF...';
+      setPreviewStatus(previewWindow, 'Ouverture du PDF…');
+      previewWindow.postMessage({ type: 'CAHIER_PDF_READY', bytes }, '*', [bytes]);
+      previewWindow.focus();
       window.setTimeout(() => {
         button.textContent = original;
         button.disabled = false;
-      }, 800);
+      }, 1200);
       return;
     }
 
