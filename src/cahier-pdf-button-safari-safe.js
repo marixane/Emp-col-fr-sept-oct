@@ -343,7 +343,51 @@ const downloadPdf = (pdfBlob) => {
 
 const showPreviewLoading = (previewWindow) => {
   previewWindow.document.open();
-  previewWindow.document.write('<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Génération PDF…</title></head><body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f8fafc;font-family:Arial,sans-serif;color:#0f172a"><div style="text-align:center"><h2>Génération du PDF en cours…</h2><p>Veuillez patienter.</p></div></body></html>');
+  previewWindow.document.write(`<!doctype html>
+    <html lang="fr">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Aperçu PDF</title>
+        <style>
+          html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#eef2f7;font-family:Arial,sans-serif;color:#0f172a}
+          #loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#f8fafc;z-index:2}
+          .card{min-width:320px;text-align:center;padding:34px 42px;border-radius:18px;background:#fff;box-shadow:0 18px 50px rgba(15,23,42,.18)}
+          .spinner{width:44px;height:44px;margin:0 auto 18px;border:5px solid #dbeafe;border-top-color:#2563eb;border-radius:50%;animation:spin .8s linear infinite}
+          h2{margin:0 0 10px;font-size:24px}p{margin:0;color:#475569;font-size:16px;font-weight:700}
+          #pdf-frame{display:none;width:100%;height:100%;border:0;background:#eef2f7}
+          @keyframes spin{to{transform:rotate(360deg)}}
+        </style>
+      </head>
+      <body>
+        <div id="loading"><div class="card"><div class="spinner"></div><h2 id="status">Préparation des pages…</h2><p>Veuillez patienter.</p></div></div>
+        <iframe id="pdf-frame" title="Aperçu du PDF"></iframe>
+        <script>
+          window.addEventListener('message', function (event) {
+            if (!event.data || event.data.type !== 'CAHIER_PDF_READY' || !event.data.bytes) return;
+            document.getElementById('status').textContent = 'Ouverture du PDF…';
+            var pdfBlob = new Blob([event.data.bytes], { type: 'application/pdf' });
+            var pdfUrl = URL.createObjectURL(pdfBlob);
+            var frame = document.getElementById('pdf-frame');
+            var displayed = false;
+            var displayPdf = function () {
+              if (displayed) return;
+              displayed = true;
+              document.getElementById('loading').style.display = 'none';
+              frame.style.display = 'block';
+              if (window.opener) window.opener.postMessage({ type: 'CAHIER_PDF_DISPLAYED' }, '*');
+            };
+            frame.style.display = 'block';
+            frame.onload = displayPdf;
+            frame.src = pdfUrl;
+            // Les lecteurs PDF intégrés ne déclenchent pas toujours « load ».
+            // Ce délai garantit que l'écran d'attente ne reste jamais bloqué.
+            window.setTimeout(displayPdf, 700);
+            window.addEventListener('beforeunload', function () { URL.revokeObjectURL(pdfUrl); }, { once: true });
+          });
+        </script>
+      </body>
+    </html>`);
   previewWindow.document.close();
 };
 
@@ -417,14 +461,14 @@ const exportPdf = async (button, mode = 'download') => {
     if (mode === 'preview') {
       const html = buildExportHtml();
       button.textContent = 'Génération PDF...';
-      // Le navigateur reçoit directement le PDF du serveur dans l'onglet déjà
-      // ouvert. Cette méthode évite les blocages des URL blob dans Safari.
-      submitPreviewForm(html, previewWindow);
-      button.textContent = 'PDF en cours...';
+      const bytes = await requestPdfChunk(html);
+      button.textContent = 'Ouverture PDF...';
+      previewWindow.postMessage({ type: 'CAHIER_PDF_READY', bytes }, '*', [bytes]);
+      previewWindow.focus();
       window.setTimeout(() => {
         button.textContent = original;
         button.disabled = false;
-      }, 1500);
+      }, 1200);
       return;
     }
 
