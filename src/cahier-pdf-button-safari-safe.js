@@ -417,19 +417,14 @@ const exportPdf = async (button, mode = 'download') => {
     if (mode === 'preview') {
       const html = buildExportHtml();
       button.textContent = 'Génération PDF...';
-      const bytes = await requestPdfChunk(html);
-      const blob = new Blob([bytes], { type: 'application/pdf' });
-      const previewUrl = URL.createObjectURL(blob);
-
-      button.textContent = 'Ouverture PDF...';
-      previewWindow.location.replace(previewUrl);
-      previewWindow.focus();
-      button.textContent = 'PDF ouvert';
-      window.setTimeout(() => URL.revokeObjectURL(previewUrl), 60 * 60 * 1000);
+      // Le navigateur reçoit directement le PDF du serveur dans l'onglet déjà
+      // ouvert. Cette méthode évite les blocages des URL blob dans Safari.
+      submitPreviewForm(html, previewWindow);
+      button.textContent = 'PDF en cours...';
       window.setTimeout(() => {
         button.textContent = original;
         button.disabled = false;
-      }, 900);
+      }, 1500);
       return;
     }
 
