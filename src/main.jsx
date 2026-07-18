@@ -94,36 +94,33 @@ import './cahier-hide-extra-school-year.css';
 import './cahier-group-box-polish.css';
 import './cahier-fixed-five-entries.css';
 import './cahier-session-fit.css';
-import './cahier-session-duration.js';
-import './cahier-class-label-large.js';
 import './cahier-duration-right.css';
 import './cahier-first-page-clean.css';
 import './cahier-table-exams-polish.css';
 import './cahier-auto-fit-many-classes.css';
 import './cahier-main-cover-page.css';
-import './cahier-main-cover-page.js';
+// Désactivé : ancienne couverture remplacée par CoverPage.jsx.
+// import './cahier-main-cover-page.js';
 // Désactivé : ce helper réordonne les pages à chaque saisie et peut bloquer Safari.
 // import './cahier-lycee-events-inline.js';
 import './cahier-single-autres-group.css';
 import './cahier-rename-cover-autres-safe.js';
 import './cahier-exams-groups-page.css';
-import './cahier-exams-groups-page.js';
+// La page des examens est désormais le dernier enfant React dans Tab.jsx.
+import './cahier-progress-sept-may-v3.js';
+import './cahier-event-badge-center.css';
 // Désactivé : ce guard DOM peut bloquer Safari pendant la saisie.
 // import './cahier-hide-holiday-session-duplicates.js';
 
-// Bouton PDF Safari-safe : permanent, devant tout, sans mutation DOM web.
-// Il ne modifie les pages qu'au moment de générer le PDF.
+// La page finale doit être préparée avant que le générateur PDF lise les pages.
+import './cahier-exams-last-in-pdf.js';
+// Les deux boutons PDF utilisent la même fonction de génération.
 import './cahier-pdf-button-safari-safe.js';
-import './cahier-progress-bar-class.js';
-// Désactivé : cet ancien helper annulait les nouvelles dimensions de la barre dans le PDF.
-// import './cahier-pdf-progress-inline.js';
+import './cahier-generate-pages-button.css';
 import './cahier-pdf-class-size-fix.js';
-import './cahier-pdf-fill-pages.css';
-import './cahier-blue-header-compact.css';
+import './cahier-first-saturday-visibility.js';
 import './cahier-pdf-compact-timetable.css';
 import './cahier-pdf-compact-timetable.js';
-import './cahier-remove-jour-cell.js';
-import './cahier-pages-2-3-down.css';
 
 // Désactivé : ce helper DOM faisait buguer l'ajout de plusieurs séances.
 // import './cahier-group-cover-july10-light.js';
@@ -143,10 +140,5 @@ import './cahier-pages-2-3-down.css';
 // import './cahier-cover-info-panel.js';
 // import './cahier-hide-empty-group-pages.js';
 // import './cahier-july-complete.js';
-import './cahier-college-group-titles.js';
-import './cahier-total-hours-bottom.css';
-import './cahier-exams-no-green-title.css';
-import './cahier-exams-single-date.css';
-import './cahier-exams-single-date.js';
 
 createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);

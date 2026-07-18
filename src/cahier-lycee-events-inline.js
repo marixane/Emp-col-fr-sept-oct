@@ -171,7 +171,7 @@ const rebalanceAllGroupsToFiveEntries = () => {
 
 const renameAutresGroupTitles = () => {
   document.querySelectorAll('.homework-cover-page h1, .homework-page [style*="text-transform: uppercase"]').forEach((node) => {
-    if (String(node.textContent || '').trim().toUpperCase() === 'AUTRES') node.textContent = 'Tronc Commun';
+    if (String(node.textContent || '').trim().toUpperCase() === 'AUTRES') node.textContent = '1 AC';
   });
 };
 

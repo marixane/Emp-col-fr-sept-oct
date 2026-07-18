@@ -156,7 +156,7 @@ const findGroupGrid = () => {
   return Array.from(tablePage.querySelectorAll('div'))
     .find((node) => {
       const children = Array.from(node.children || []);
-      return children.length === 5 && children.some((child) => /tronc commun/i.test(child.textContent || ''));
+      return children.length === 5 && children.some((child) => /1\s*ac/i.test(child.textContent || ''));
     }) || null;
 };
 

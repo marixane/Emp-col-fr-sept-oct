@@ -1,11 +1,11 @@
 const EXAM_ROWS = [
   ['Primaire', 'Examen normalisé local', '18–19 janvier 2027'],
-  ['Lycée', 'Examen régional 1ère Bac', '28–29 mai 2027'],
-  ['Lycée', 'Examen national 2ème Bac', '01–03 juin 2027'],
+  ['Lycée', 'Examen régional 2 AC', '28–29 mai 2027'],
+  ['Lycée', 'Examen national 3 AC', '01–03 juin 2027'],
   ['Collège', 'Examen régional', '23–24 juin 2027'],
   ['Primaire', 'Examen normalisé provincial', '25–26 juin 2027'],
-  ['Lycée', 'Rattrapage 1ère Bac', '28–29 juin 2027'],
-  ['Lycée', 'Rattrapage 2ème Bac', '01–03 juillet 2027']
+  ['Lycée', 'Rattrapage 2 AC', '28–29 juin 2027'],
+  ['Lycée', 'Rattrapage 3 AC', '01–03 juillet 2027']
 ];
 
 const makeExamCell = (text, header = false) => {

@@ -1,10 +1,9 @@
-/* L'interface reste légère : couverture + emploi du temps uniquement.
-   Les autres feuilles restent disponibles dans le DOM et sont révélées
-   seulement dans la copie envoyée au générateur PDF. */
-body.cahier-tab-active
-  .clean-cahier-shell:not(.cover-page-shell)
-  .cahier-preview-zone
-  > .a4-page:not(:has(.timetable-table)) {
-  display: none !important;
+/* L'interface conserve seulement la couverture et l'emploi du temps.
+   Les pages générées restent rendues hors écran pour l'export PDF. */
+body.cahier-tab-active .clean-cahier-shell .cahier-preview-zone > .a4-page:not(:has(.timetable-table)) {
+  position: fixed !important;
+  left: -100000px !important;
+  top: 0 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
 }
-

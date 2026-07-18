@@ -26,23 +26,35 @@ const LOCAL_CHROME_PATHS = [
 ];
 
 const isLocalDev = () => !process.env.VERCEL && process.env.NODE_ENV !== 'production';
-
 const getLocalChromePath = () => LOCAL_CHROME_PATHS.find((path) => existsSync(path));
-
 const getExecutablePath = async () => {
   const localPath = getLocalChromePath();
   if (isLocalDev() && localPath) return localPath;
   return chromium.executablePath();
 };
+const getLaunchArgs = () => isLocalDev() ? ['--no-sandbox', '--disable-setuid-sandbox'] : chromium.args;
+const cleanBaseUrl = (url) => String(url || 'https://a4exam.com').replace(/["<>]/g, '').replace(/\/$/, '');
+const errorMessage = (error) => String(error?.message || error || 'Erreur génération PDF');
 
-const getLaunchArgs = () => {
-  const args = isLocalDev() ? ['--no-sandbox', '--disable-setuid-sandbox'] : chromium.args;
-  return args;
+const isInlinePreview = (req) => {
+  if (String(req?.query?.preview || '') === '1') return true;
+  try {
+    const requestUrl = new URL(req?.url || '/api/cahier-pdf', 'http://localhost');
+    return requestUrl.searchParams.get('preview') === '1';
+  } catch {
+    return false;
+  }
 };
 
-const cleanBaseUrl = (url) => String(url || 'https://a4exam.com').replace(/["<>]/g, '').replace(/\/$/, '');
+const addSchoolYearToDateText = (text) => String(text || '').replace(/\b(\d{2})\/(\d{2})(?!\/\d{4})\b/g, (_, day, month) => {
+  const year = Number(month) >= 9 ? 2026 : 2027;
+  return `${day}/${month}/${year}`;
+});
 
-const errorMessage = (error) => String(error?.message || error || 'Erreur génération PDF');
+const enrichHomeworkDates = (html) => String(html).replace(
+  /(<div\b[^>]*class=(?:"[^"]*\bhomework-date\b[^"]*"|'[^']*\bhomework-date\b[^']*')[^>]*>)([\s\S]*?)(<\/div>)/gi,
+  (_, openingTag, content, closingTag) => `${openingTag}${addSchoolYearToDateText(content)}${closingTag}`
+);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -76,6 +88,7 @@ export default async function handler(req, res) {
     page.setDefaultNavigationTimeout(LONG_TIMEOUT);
 
     const safeBase = cleanBaseUrl(baseUrl);
+    const enrichedHtml = enrichHomeworkDates(html);
     const documentHtml = `<!doctype html>
 <html>
 <head>
@@ -92,7 +105,8 @@ export default async function handler(req, res) {
       overflow: visible !important;
     }
     body { min-height: ${A4_HEIGHT_CSS} !important; }
-    .cahier-pdf-export-button, .app-tabs, .tab-button, button { display: none !important; }
+    .cahier-pdf-export-button, .app-tabs, .tab-button, button,
+    #cahier-main-cover-page, .cahier-main-cover-page, [data-force-first-page="true"] { display: none !important; }
     .cahier-preview-zone, .preview-zone {
       width: ${A4_WIDTH_CSS} !important;
       min-width: ${A4_WIDTH_CSS} !important;
@@ -144,16 +158,101 @@ export default async function handler(req, res) {
       width: ${A4_WIDTH_CSS} !important;
       height: ${A4_HEIGHT_CSS} !important;
     }
+    .homework-date {
+      border-bottom: 2px dotted rgba(63, 64, 80, 0.5) !important;
+      padding-bottom: 8px !important;
+    }
     .a4-page:last-child, .cahier-page:last-child { break-after: auto !important; page-break-after: auto !important; }
   </style>
 </head>
 <body class="cahier-tab-active">
-  ${html}
+  ${enrichedHtml}
 </body>
 </html>`;
 
     await page.setContent(documentHtml, { waitUntil: 'domcontentloaded', timeout: LONG_TIMEOUT });
     await page.evaluate(async () => {
+      const addYear = (text) => String(text || '').replace(/\b(\d{2})\/(\d{2})(?!\/\d{4})\b/g, (_, day, month) => {
+        const year = Number(month) >= 9 ? 2026 : 2027;
+        return `${day}/${month}/${year}`;
+      });
+
+      document.querySelectorAll('.homework-date').forEach((element) => {
+        element.textContent = addYear(element.textContent);
+      });
+
+      document.querySelectorAll('.cahier-exams-list tbody tr').forEach((row) => {
+        Array.from(row.cells).slice(0, 2).forEach((cell) => {
+          cell.textContent = addYear(cell.textContent);
+        });
+      });
+
+      const compactHiddenHourStart = 4;
+      const compactHiddenHourEnd = 6;
+      const keepCompactCellPart = (cell, span, startsAfterBreak = false) => {
+        cell.colSpan = span;
+        if (startsAfterBreak) {
+          cell.classList.add('cahier-pdf-after-break');
+          cell.style.setProperty('border-left', '4px solid #000', 'important');
+        }
+      };
+      const transformCompactRow = (row) => {
+        let logicalHourIndex = 0;
+
+        Array.from(row.cells).slice(1).forEach((cell) => {
+          const originalSpan = Math.max(Number(cell.colSpan) || 1, 1);
+          const cellEnd = logicalHourIndex + originalSpan;
+          const beforeBreakSpan = Math.max(
+            0,
+            Math.min(cellEnd, compactHiddenHourStart) - logicalHourIndex,
+          );
+          const afterBreakSpan = Math.max(
+            0,
+            cellEnd - Math.max(logicalHourIndex, compactHiddenHourEnd),
+          );
+
+          if (beforeBreakSpan > 0 && afterBreakSpan > 0) {
+            const afterBreakCell = cell.cloneNode(true);
+            keepCompactCellPart(cell, beforeBreakSpan);
+            keepCompactCellPart(afterBreakCell, afterBreakSpan, true);
+            cell.after(afterBreakCell);
+          } else if (beforeBreakSpan > 0) {
+            keepCompactCellPart(cell, beforeBreakSpan);
+          } else if (afterBreakSpan > 0) {
+            keepCompactCellPart(
+              cell,
+              afterBreakSpan,
+              logicalHourIndex <= compactHiddenHourEnd,
+            );
+          } else {
+            cell.remove();
+          }
+
+          logicalHourIndex = cellEnd;
+        });
+      };
+
+      document.querySelectorAll('.timetable-table.compact-pdf-hours').forEach((table) => {
+        const headerRow = table.tHead?.rows?.[0];
+        const logicalHeaderWidth = Array.from(headerRow?.cells || [])
+          .slice(1)
+          .reduce((total, cell) => total + Math.max(Number(cell.colSpan) || 1, 1), 0);
+
+        if (logicalHeaderWidth > 8) {
+          table.querySelectorAll('thead tr, tbody tr').forEach(transformCompactRow);
+        }
+
+        table.querySelectorAll('.cahier-pdf-after-break').forEach((cell) => {
+          cell.style.setProperty('border-left', '4px solid #000', 'important');
+        });
+        table.style.setProperty('width', '96%', 'important');
+        table.style.setProperty('margin-left', 'auto', 'important');
+        table.style.setProperty('margin-right', 'auto', 'important');
+        table.style.setProperty('table-layout', 'fixed', 'important');
+        table.dataset.cahierPdfCompactNormalized = 'true';
+        table.classList.remove('compact-pdf-hours');
+      });
+
       if (document.fonts?.ready) await document.fonts.ready.catch(() => {});
       window.scrollTo(0, 0);
     });
@@ -168,9 +267,7 @@ export default async function handler(req, res) {
       timeout: LONG_TIMEOUT
     });
 
-    const preview = String(req.query?.preview || '') === '1';
-    const disposition = preview ? 'inline' : 'attachment';
-
+    const disposition = isInlinePreview(req) ? 'inline' : 'attachment';
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `${disposition}; filename="Cahier-de-texte-2026-2027.pdf"`);
     res.setHeader('Cache-Control', 'no-store');

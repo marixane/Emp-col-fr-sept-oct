@@ -4,14 +4,13 @@ const SECOND_PAGE_ID = 'cahier-exams-groups-page';
 const SECOND_PAGE_TITLE_CLASS = 'cahier-exams-groups-main-title';
 
 const findTimetablePage = () => document.querySelector('.timetable-table')?.closest?.('.a4-page.cahier-page');
+const findPreviewZone = () => document.querySelector('.cahier-preview-zone');
 
 const findGroupsBlock = (page) => Array.from(page?.children || []).find((node) => {
   if (node.id === SECOND_PAGE_ID || node.classList?.contains(SECOND_PAGE_TITLE_CLASS)) return false;
   if (node.querySelector?.('.cahier-exams-list, .timetable-table')) return false;
   const text = String(node.textContent || '').toUpperCase();
-  const oldTitles = text.includes('TRONC COMMUN') && text.includes('1ÈRES BAC') && text.includes('2ÈME BAC');
-  const collegeTitles = text.includes('1 AC') && text.includes('2 AC') && text.includes('3 AC');
-  return oldTitles || collegeTitles;
+  return text.includes('1 AC') && text.includes('2 AC') && text.includes('3 AC');
 });
 
 const getOrCreateSecondPage = (timetablePage) => {
@@ -27,15 +26,17 @@ const getOrCreateSecondPage = (timetablePage) => {
   if (!title) {
     title = document.createElement('div');
     title.className = SECOND_PAGE_TITLE_CLASS;
+    title.textContent = 'Liste des examens et groupes';
     page.prepend(title);
   }
-  title.textContent = 'Liste des groupes';
 
   return page;
 };
 
-const removeExamTables = () => {
-  document.querySelectorAll('.cahier-exams-list').forEach((examList) => examList.remove());
+const movePageToEnd = (page) => {
+  const previewZone = findPreviewZone();
+  if (!previewZone || !page) return;
+  if (previewZone.lastElementChild !== page) previewZone.append(page);
 };
 
 const makeSecondPage = () => {
@@ -43,13 +44,17 @@ const makeSecondPage = () => {
   if (!timetablePage) return;
 
   const secondPage = getOrCreateSecondPage(timetablePage);
+  const examList = timetablePage.querySelector('.cahier-exams-list') || secondPage.querySelector('.cahier-exams-list');
   const groups = findGroupsBlock(timetablePage) || findGroupsBlock(secondPage);
-  if (!groups) return;
+  if (!examList || !groups) return;
 
-  removeExamTables();
+  examList.style.removeProperty('display');
   groups.style.removeProperty('display');
 
+  if (examList.parentElement !== secondPage) secondPage.append(examList);
   if (groups.parentElement !== secondPage) secondPage.append(groups);
+
+  movePageToEnd(secondPage);
 };
 
 const scheduleSecondPage = () => {

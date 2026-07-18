@@ -1,9 +1,0 @@
-.cahier-exams-groups-page > div[style*="grid-template-columns"] {
-  margin-top: 140px !important;
-}
-
-@media print {
-  .cahier-exams-groups-page > div[style*="grid-template-columns"] {
-    margin-top: 140px !important;
-  }
-}

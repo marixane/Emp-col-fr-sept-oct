@@ -7,7 +7,7 @@ const HOURS = ['08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00
 const CELL_COLORS = ['#fff3bf', '#d8f3dc', '#dbeafe', '#ffe4e6', '#ede9fe', '#cffafe', '#fef3c7', '#dcfce7', '#e0e7ff', '#fce7f3'];
 const HOMEWORK_COLORS = ['#66c43f', '#b34bd7', '#2f80ed', '#ff3f5f', '#f2994a'];
 const GROUP_COLORS = ['#e0f2fe', '#dcfce7', '#fef3c7', '#fce7f3', '#ede9fe'];
-const GROUP_TITLES = ['Tronc Commun', '1ères Bac', '2ème Bac', 'Autres', 'Autres'];
+const GROUP_TITLES = ['1 AC', '2 AC', '3 AC', 'Autres', 'Autres'];
 const DOT_TEXT = Array.from({ length: 4 }, () => '.'.repeat(74)).join('\n');
 
 const MANDATORY_EVENTS = [
@@ -26,13 +26,13 @@ const MANDATORY_EVENTS = [
   { start: '01/05', end: '01/05', label: 'Nationale', text: 'Fête nationale : Fête du Travail', type: 'holiday' },
   { start: '03/05', end: '10/05', label: 'Scolaire', text: 'Vacance scolaire : Vacances intermédiaires 4', type: 'holiday' },
   { start: '27/05', end: '30/05', label: 'Religieuse', text: 'Vacance religieuse : Aïd Al-Adha', type: 'holiday' },
-  { start: '28/05', end: '29/05', label: 'Lycée', text: 'Examen : Examen régional 1ère Bac', type: 'exam' },
-  { start: '01/06', end: '03/06', label: 'Lycée', text: 'Examen : Examen national 2ème Bac', type: 'exam' },
+  { start: '28/05', end: '29/05', label: 'Lycée', text: 'Examen : Examen régional 2 AC', type: 'exam' },
+  { start: '01/06', end: '03/06', label: 'Lycée', text: 'Examen : Examen national 3 AC', type: 'exam' },
   { start: '16/06', end: '16/06', label: 'Religieuse', text: 'Vacance religieuse : 1er Moharram', type: 'holiday' },
   { start: '23/06', end: '24/06', label: 'Collège', text: 'Examen : Examen régional', type: 'exam' },
   { start: '25/06', end: '26/06', label: 'Primaire', text: 'Examen : Examen normalisé provincial', type: 'exam' },
-  { start: '28/06', end: '29/06', label: 'Lycée', text: 'Rattrapage : 1ère Bac', type: 'exam' },
-  { start: '01/07', end: '03/07', label: 'Lycée', text: 'Rattrapage : 2ème Bac', type: 'exam' },
+  { start: '28/06', end: '29/06', label: 'Lycée', text: 'Rattrapage : 2 AC', type: 'exam' },
+  { start: '01/07', end: '03/07', label: 'Lycée', text: 'Rattrapage : 3 AC', type: 'exam' },
   { start: '10/07', end: '10/07', label: 'Administration', text: 'Le procès-verbal de sortie', type: 'holiday' }
 ];
 
@@ -45,11 +45,11 @@ const getMondayBasedDayIndex = (date) => (date.getDay() + 6) % 7;
 const formatMonthDate = (date) => `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`;
 const getDisplayDay = (date, rows) => getMondayBasedDayIndex(date) < rows.length ? String(rows[getMondayBasedDayIndex(date)]?.day || DAYS[getMondayBasedDayIndex(date)]).toUpperCase() : CALENDAR_DAYS[date.getDay()].toUpperCase();
 const getMonthDateAsSchoolDate = (monthDate) => { const [d, m] = monthDate.split('/').map(Number); const y = getSchoolStartYear(); return new Date(m >= 9 ? y : y + 1, m - 1, d); };
-const getSchoolDates = () => { const y = getSchoolStartYear(); const dates = []; const current = new Date(y, 8, 1); const end = new Date(y, 9, 31); while (current <= end) { dates.push(new Date(current)); current.setDate(current.getDate() + 1); } return dates; };
+const getSchoolDates = () => { const y = getSchoolStartYear(); const dates = []; const current = new Date(y, 8, 1); const end = new Date(y + 1, 6, 10); while (current <= end) { dates.push(new Date(current)); current.setDate(current.getDate() + 1); } return dates; };
 const getEventStart = (monthDate) => MANDATORY_EVENTS.filter((event) => event.start === monthDate);
 const isInsideEventAfterStart = (monthDate) => MANDATORY_EVENTS.some((event) => { const d = getMonthDateAsSchoolDate(monthDate); return d > getMonthDateAsSchoolDate(event.start) && d <= getMonthDateAsSchoolDate(event.end); });
 const chunkEntries = (entries, size) => entries.reduce((pages, entry, index) => { if (index % size === 0) pages.push([]); pages[pages.length - 1].push(entry); return pages; }, []);
-const getClassLevel = (className) => { const n = String(className).toUpperCase().replace(/[\s-]/g, ''); if (n.startsWith('TC') || n.includes('TRONCCOMMUN')) return 0; if (n.startsWith('1BAC') || n.startsWith('1ERE') || n.startsWith('1ÈRE')) return 1; if (n.startsWith('2BAC') || n.startsWith('2EME') || n.startsWith('2ÈME')) return 2; return 3; };
+const getClassLevel = (className) => { const n = String(className).toUpperCase().replace(/[\s-]/g, ''); if (n.startsWith('1AC')) return 0; if (n.startsWith('2AC')) return 1; if (n.startsWith('3AC')) return 2; return 0; };
 const getCellColor = (text) => { const n = String(text || '').toLowerCase().replace(/[\s-]/g, ''); if (!n) return 'white'; let h = 2166136261; for (let i = 0; i < n.length; i += 1) { h ^= n.charCodeAt(i); h = Math.imul(h, 16777619); } return CELL_COLORS[Math.abs(h) % CELL_COLORS.length]; };
 
 const dotTextStyle = { color: 'rgba(63, 64, 80, 0.28)', fontSize: '22px', fontWeight: 900, lineHeight: 1.35, letterSpacing: '1px', whiteSpace: 'pre-wrap', overflow: 'hidden' };
@@ -99,18 +99,20 @@ export default function TabStable() {
   const [teacher, setTeacher] = useState('Professeur :');
   const [hours, setHours] = useState(HOURS);
   const [rows, setRows] = useState(createRows);
+  const [generatedRows, setGeneratedRows] = useState(createRows);
+  const [generatedHours, setGeneratedHours] = useState(HOURS);
+  const [version, setVersion] = useState(0);
   const schoolYear = getSchoolYear();
 
   const validateOnEnter = (event) => { if (event.key === 'Enter') { event.preventDefault(); event.currentTarget.blur(); } };
   const updateCellText = (dayIndex, hour, value) => setRows((current) => current.map((row, index) => index === dayIndex ? { ...row, cells: { ...row.cells, [hour]: { ...row.cells[hour], text: value } } } : row));
   const updateRoom = (dayIndex, hour, value) => setRows((current) => current.map((row, index) => index === dayIndex ? { ...row, cells: { ...row.cells, [hour]: { ...row.cells[hour], room: value } } } : row));
+  const generatePages = () => { setGeneratedRows(JSON.parse(JSON.stringify(rows))); setGeneratedHours([...hours]); setVersion((value) => value + 1); };
+
   const tableClasses = rows.reduce((classes, row) => { hours.forEach((hour) => { const text = normalize(row.cells[hour]?.text); if (text && !classes.includes(text)) classes.push(text); }); return classes; }, []);
   const classGroups = GROUP_TITLES.map((title) => ({ title, classes: [] }));
   tableClasses.forEach((className) => classGroups[getClassLevel(className)].classes.push(className));
-  // Les pages cachées suivent toujours le tableau courant. Ainsi « Voir PDF »
-  // et « Télécharger PDF » exportent exactement les données visibles, sans
-  // nécessiter un bouton intermédiaire de génération.
-  const homeworkGroups = useMemo(() => buildHomeworkGroups(rows, hours), [rows, hours]);
+  const homeworkGroups = useMemo(() => buildHomeworkGroups(generatedRows, generatedHours), [generatedRows, generatedHours, version]);
   const totalHours = rows.reduce((total, row) => total + hours.reduce((sub, hour) => sub + (normalize(row.cells[hour]?.text) ? 1 : 0), 0), 0);
 
   return <main className="cahier-shell clean-cahier-shell">
@@ -123,6 +125,7 @@ export default function TabStable() {
           <input value={teacher} onChange={(e) => setTeacher(e.target.value)} onKeyDown={validateOnEnter} />
           <input value={schoolYear} readOnly aria-label="Année scolaire automatique" />
         </header>
+        <button type="button" className="no-print" onClick={generatePages} style={{ margin: '0 auto 8px', width: '220px', display: 'block', background: '#16a34a' }}>Actualiser les pages</button>
         <div className="total-hours-control"><span>Total heures :</span><strong>{totalHours} h</strong></div>
         <table className="timetable-table">
           <thead><tr><th>Jour</th>{hours.map((hour, index) => <th key={index}><textarea value={hour} onChange={(e) => setHours((current) => current.map((item, i) => i === index ? e.target.value : item))} onKeyDown={validateOnEnter} rows="2" /></th>)}</tr></thead>

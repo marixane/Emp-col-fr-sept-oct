@@ -1,25 +1,19 @@
-body.cahier-tab-active .cahier-preview-zone,
-.cahier-preview-zone {
+body.cahier-tab-active .cahier-preview-zone {
   counter-reset: cahier-page-number;
 }
 
-body.cahier-tab-active .cahier-page,
-.cahier-preview-zone .cahier-page {
+body.cahier-tab-active .cahier-page {
   position: relative;
   counter-increment: cahier-page-number;
 }
 
-body.cahier-tab-active .cahier-page::after,
-.cahier-preview-zone .cahier-page::after {
+body.cahier-tab-active .cahier-page::after {
   content: counter(cahier-page-number);
   position: absolute;
   right: 18px;
   bottom: 10px;
-  z-index: 500;
-  display: block;
-  visibility: visible;
-  opacity: 1;
-  color: rgba(17, 24, 39, 0.32);
+  z-index: 50;
+  color: rgba(17, 24, 39, 0.22);
   font-family: Arial, sans-serif;
   font-size: 18px;
   font-weight: 900;
@@ -28,12 +22,9 @@ body.cahier-tab-active .cahier-page::after,
 }
 
 @media print {
-  .cahier-preview-zone .cahier-page::after {
-    right: 18px !important;
-    bottom: 14px !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    color: rgba(17, 24, 39, 0.38) !important;
+  body.cahier-tab-active .cahier-page::after {
+    right: 18px;
+    bottom: 10px;
+    color: rgba(17, 24, 39, 0.22);
   }
 }

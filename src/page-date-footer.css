@@ -1,14 +1,165 @@
-.page-date,
-body.hide-page-date .page-date,
+.page-date {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 12px !important;
+  transform: translateX(-50%) !important;
+  color: #777777 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  z-index: 80 !important;
+  pointer-events: auto !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  font-family: inherit !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  display: inline !important;
+}
+
+.page-date:hover {
+  color: #2563eb !important;
+  background: transparent !important;
+  text-decoration: underline !important;
+}
+
+body.hide-page-date .page-date {
+  display: inline !important;
+}
+
 .exam-page.is-exporting .page-date {
-  display: none !important;
+  color: #777777 !important;
+  background: transparent !important;
+  text-decoration: none !important;
 }
 
 .page-date-toggle,
 .page-date-control,
 .page-date-title,
 .page-date-input,
-.page-date-toggle-button,
+.page-date-toggle-button {
+  display: none !important;
+}
+
+.panel {
+  z-index: 200000 !important;
+}
+
+.preview-zone,
+.a4-page,
+.exam-page {
+  z-index: 1 !important;
+}
+
 .page-date-picker {
   display: none !important;
+  position: fixed !important;
+  width: 258px !important;
+  box-sizing: border-box !important;
+  padding: 7px !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  border: 1px solid #94a3b8 !important;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.24) !important;
+  z-index: 300000 !important;
+  color: #111827 !important;
+  overflow: hidden !important;
+}
+
+.page-date-picker.open {
+  display: block !important;
+}
+
+.page-date-picker-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+  margin-bottom: 6px !important;
+}
+
+.page-date-picker-head strong {
+  font-size: 13px !important;
+  font-weight: 950 !important;
+  color: #111827 !important;
+}
+
+.page-date-prev,
+.page-date-next {
+  width: 26px !important;
+  height: 24px !important;
+  border-radius: 7px !important;
+  border: 1px solid #cbd5e1 !important;
+  background: #f8fafc !important;
+  color: #111827 !important;
+  font-size: 17px !important;
+  font-weight: 900 !important;
+  cursor: pointer !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+}
+
+.page-date-weekdays,
+.page-date-days {
+  display: grid !important;
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  gap: 3px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.page-date-weekdays span {
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  color: #475569 !important;
+  padding: 2px 0 !important;
+  text-align: center !important;
+}
+
+.page-date-day,
+.page-date-days .empty {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 26px !important;
+  border-radius: 7px !important;
+  box-sizing: border-box !important;
+}
+
+.page-date-day {
+  border: 1px solid #d1d5db !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  text-align: center !important;
+}
+
+.page-date-day.today {
+  background: #e0f2fe !important;
+  border-color: #38bdf8 !important;
+  color: #075985 !important;
+  box-shadow: inset 0 0 0 1px #38bdf8 !important;
+}
+
+.page-date-day:hover {
+  background: #f0fdf4 !important;
+  border-color: #22c55e !important;
+  color: #065f46 !important;
+}
+
+.page-date-day.active,
+.page-date-day.active.today {
+  background: #dcfce7 !important;
+  border-color: #22c55e !important;
+  color: #065f46 !important;
+  box-shadow: inset 0 0 0 2px #16a34a !important;
 }

@@ -7,7 +7,7 @@
 }
 
 .cahier-page > div[style*="repeat(5, 1fr)"] > div:nth-child(4) > div:first-child::before {
-  content: 'TRONC COMMUN' !important;
+  content: '1 AC' !important;
   display: block !important;
   color: #111827 !important;
   font-size: 12px !important;

@@ -1,7 +1,7 @@
 const renameAutresTitlesSafely = () => {
   document.querySelectorAll('.homework-cover-page h1, .homework-page div').forEach((node) => {
     if (String(node.textContent || '').trim().toUpperCase() === 'AUTRES') {
-      node.textContent = 'TRONC COMMUN';
+      node.textContent = '1 AC';
     }
   });
 };

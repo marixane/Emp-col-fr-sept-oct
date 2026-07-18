@@ -18,12 +18,12 @@ const EVENT_FIXES_2026 = [
   ['Vacance religieuse : Aïd Al-Adha', 'Vacance religieuse : Aïd Al-Adha', '09 - 11 DHOU AL-HIJJA 1448'],
   ['Vacance religieuse : 1er Moharram', 'Vacance religieuse : 1er Moharram', '01 MOHARRAM 1449'],
   ['Examen : Examen normalisé local', 'Examen : Examen normalisé local', 'LUNDI 18/01 - MARDI 19/01'],
-  ['Examen : Examen régional 1ère Bac', 'Examen : Examen régional 1ère Bac', 'VENDREDI 28/05 - SAMEDI 29/05'],
-  ['Examen : Examen national 2ème Bac', 'Examen : Examen national 2ème Bac', 'MARDI 01/06 - JEUDI 03/06'],
+  ['Examen : Examen régional 2 AC', 'Examen : Examen régional 2 AC', 'VENDREDI 28/05 - SAMEDI 29/05'],
+  ['Examen : Examen national 3 AC', 'Examen : Examen national 3 AC', 'MARDI 01/06 - JEUDI 03/06'],
   ['Examen : Examen régional', 'Examen : Examen régional', 'MERCREDI 23/06 - JEUDI 24/06'],
   ['Examen : Examen normalisé provincial', 'Examen : Examen normalisé provincial', 'VENDREDI 25/06 - SAMEDI 26/06'],
-  ['Rattrapage : 1ère Bac', 'Rattrapage : 1ère Bac', 'LUNDI 28/06 - MARDI 29/06'],
-  ['Rattrapage : 2ème Bac', 'Rattrapage : 2ème Bac', 'JEUDI 01/07 - SAMEDI 03/07']
+  ['Rattrapage : 2 AC', 'Rattrapage : 2 AC', 'LUNDI 28/06 - MARDI 29/06'],
+  ['Rattrapage : 3 AC', 'Rattrapage : 3 AC', 'JEUDI 01/07 - SAMEDI 03/07']
 ];
 
 const YEAR_TEXT_FIXES_2026 = [

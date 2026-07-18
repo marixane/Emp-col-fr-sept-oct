@@ -132,6 +132,16 @@ const prepareClone = (clone) => {
     textarea.setAttribute('value', textarea.value);
   });
   clone.querySelectorAll('input').forEach((input) => input.setAttribute('value', input.value));
+  clone.querySelectorAll('.cahier-extra-holiday-entry .homework-text, .cahier-exam-entry .homework-text').forEach((box) => {
+    box.style.setProperty('box-sizing', 'border-box', 'important');
+    box.style.setProperty('align-self', 'center', 'important');
+    box.style.setProperty('width', 'calc(100% - 56px)', 'important');
+    box.style.setProperty('height', '88px', 'important');
+    box.style.setProperty('min-height', '88px', 'important');
+    box.style.setProperty('max-height', '88px', 'important');
+    box.style.setProperty('margin', 'auto 28px', 'important');
+    box.style.setProperty('border-radius', '12px', 'important');
+  });
   clone.style.setProperty('width', A4_WIDTH, 'important');
   clone.style.setProperty('height', A4_HEIGHT, 'important');
   clone.style.setProperty('margin', '0', 'important');
@@ -272,22 +282,12 @@ const keepReferencePagesLast = (zone) => {
   if (holidaysPage) zone.append(holidaysPage);
 };
 
-const waitForLatestTimetable = async () => {
-  const activeElement = document.activeElement;
-  if (activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement) {
-    activeElement.blur();
-  }
-
-  // Laisser React et les corrections de mise en page terminer leur rendu avant
-  // de copier le DOM. Le PDF correspond alors exactement au tableau courant.
-  await new Promise((resolve) => window.setTimeout(resolve, 80));
-  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-};
-
 const buildExportHtml = () => {
   const pages = Array.from(document.querySelectorAll('.cahier-preview-zone .a4-page, .cahier-preview-zone .cahier-page')).filter((page) => {
     if (page.matches(LEGACY_COVER_SELECTOR)) return false;
-    return true;
+    const rect = page.getBoundingClientRect();
+    const style = window.getComputedStyle(page);
+    return rect.width > 50 && rect.height > 50 && style.display !== 'none' && style.visibility !== 'hidden';
   });
 
   if (!pages.length) throw new Error('Aucune page A4 trouvée');
@@ -305,8 +305,12 @@ const buildExportHtml = () => {
     zone.append(clone);
   });
 
-  // Ne pas retraiter ici une ancienne variante des pages : les clones viennent
-  // directement de l'interface corrigée et conservent son ordre et son style.
+  prepareCompactTimetablesForPdf(zone);
+  applySessionDurationsForPdf(zone);
+  removeAfterJuly10(zone);
+  // Projet Collèges : aucune entrée bleue administrative ajoutée automatiquement.
+  applyFullYearsForPdf(zone);
+  keepReferencePagesLast(zone);
 
   return `<style>${getCss()}\n${EXPORT_CSS}</style>${zone.outerHTML}`;
 };
@@ -314,7 +318,6 @@ const buildExportHtml = () => {
 const requestPdfChunk = async (html) => {
   const response = await fetch('/api/cahier-pdf', {
     method: 'POST',
-    cache: 'no-store',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ html, baseUrl: window.location.origin })
   });
@@ -369,6 +372,27 @@ const submitPreviewForm = (html, previewWindow) => {
   form.remove();
 };
 
+const generateLatestPages = async () => {
+  const activeElement = document.activeElement;
+  if (activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement) activeElement.blur();
+
+  await new Promise((resolve) => {
+    let finished = false;
+    const complete = () => {
+      if (finished) return;
+      finished = true;
+      window.removeEventListener('cahier-pages-generated', complete);
+      resolve();
+    };
+
+    window.addEventListener('cahier-pages-generated', complete, { once: true });
+    window.dispatchEvent(new Event('cahier-request-generate-pages'));
+    window.setTimeout(complete, 2000);
+  });
+
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+};
+
 const exportPdf = async (button, mode = 'download') => {
   const original = button.textContent;
   let previewWindow = null;
@@ -387,7 +411,7 @@ const exportPdf = async (button, mode = 'download') => {
   button.textContent = 'Préparation PDF...';
 
   try {
-    await waitForLatestTimetable();
+    await generateLatestPages();
     if (document.fonts?.ready) await document.fonts.ready;
 
     /* L'aperçu conserve le chemin serveur existant afin de rester compatible

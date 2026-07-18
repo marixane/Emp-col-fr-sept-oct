@@ -18,13 +18,13 @@ window.CAHIER_2026_2027 = {
     ['01/05','01/05','Nationale','Fête nationale : Fête du Travail','holiday'],
     ['09/05','16/05','Scolaire','Vacance scolaire : Vacances intermédiaires 4','holiday'],
     ['15/05','17/05','Religieuse','Vacance religieuse : Aïd Al-Adha','holiday'],
-    ['28/05','29/05','Lycée','Examen : Examen régional 1ère Bac','exam'],
-    ['01/06','03/06','Lycée','Examen : Examen national 2ème Bac','exam'],
+    ['28/05','29/05','Lycée','Examen : Examen régional 2 AC','exam'],
+    ['01/06','03/06','Lycée','Examen : Examen national 3 AC','exam'],
     ['05/06','05/06','Religieuse','Vacance religieuse : 1er Moharram','holiday'],
     ['23/06','24/06','Collège','Examen : Examen régional','exam'],
     ['25/06','26/06','Primaire','Examen : Examen normalisé provincial','exam'],
-    ['28/06','29/06','Lycée','Rattrapage : 1ère Bac','exam'],
-    ['01/07','03/07','Lycée','Rattrapage : 2ème Bac','exam']
+    ['28/06','29/06','Lycée','Rattrapage : 2 AC','exam'],
+    ['01/07','03/07','Lycée','Rattrapage : 3 AC','exam']
   ],
   flags: [['18/10','Vacances intermédiaires 1'],['06/12','Vacances intermédiaires 2'],['21/03','Vacances intermédiaires 3'],['09/05','Vacances intermédiaires 4']]
 };

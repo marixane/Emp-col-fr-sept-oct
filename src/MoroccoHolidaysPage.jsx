@@ -108,7 +108,7 @@ const noteStyle = {
 const typeColor = (type) => type === 'Scolaire' ? '#bfdbfe' : type === 'Nationale' ? '#bbf7d0' : '#fed7aa';
 
 export default function MoroccoHolidaysPage() {
-  return <div className="a4-page cahier-page holidays-page" style={pageStyle}>
+  return <div id="cahier-holidays-page" className="a4-page cahier-page holidays-page" style={pageStyle}>
     <header style={headerStyle}>
       <h1 style={titleStyle}>Vacances scolaires</h1>
       <p style={subtitleStyle}>Éducation nationale marocaine · Année scolaire 2026 / 2027</p>

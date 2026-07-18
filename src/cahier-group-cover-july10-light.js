@@ -1,6 +1,6 @@
 const EXIT_TEXT = 'La signature de procès-verbal de sortie';
 const GROUP_COLORS = ['#e0f2fe', '#dcfce7', '#fef3c7', '#fce7f3', '#ede9fe'];
-const GROUP_TITLES = ['Tronc Commun', '1ères Bac', '2ème Bac', 'Autres', 'Autres'];
+const GROUP_TITLES = ['1 AC', '2 AC', '3 AC', 'Autres', 'Autres'];
 
 const normalize = (value) => String(value || '').trim().toLowerCase();
 
