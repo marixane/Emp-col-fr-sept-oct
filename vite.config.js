@@ -59,8 +59,8 @@ function normalizeSchoolCalendarPlugin() {
           "const getSchoolStartYear = () => {\n  const today = new Date();\n  return today.getMonth() >= 8 ? today.getFullYear() : today.getFullYear() - 1;\n};",
           'const getSchoolStartYear = () => 2026;'
         ],
-        ['return { start: new Date(startYear, 8, 1), end: new Date(startYear + 1, 6, 31) };', 'return { start: new Date(startYear, 8, 1), end: new Date(startYear + 1, 6, 10) };'],
-        ['const end = new Date(startYear + 1, 6, 31);', 'const end = new Date(startYear + 1, 6, 10);'],
+        ['return { start: new Date(startYear, 8, 1), end: new Date(startYear, 9, 31) };', 'return { start: new Date(startYear, 8, 1), end: new Date(startYear, 9, 31) };'],
+        ['const end = new Date(startYear, 9, 31);', 'const end = new Date(startYear, 9, 31);'],
         [
           "const getMandatoryEventStart = (monthDate) => MANDATORY_EVENTS.filter((event) => event.start === monthDate);",
           "const getMandatoryEventStart = (monthDate) => MANDATORY_EVENTS.filter((event) => event.type === 'holiday' && event.start === monthDate);"
@@ -71,28 +71,11 @@ function normalizeSchoolCalendarPlugin() {
         ],
         [
           'const groupedHomeworkPages = classGroups.map((group, groupIndex) => {',
-          'let groupedHomeworkPages = classGroups.map((group, groupIndex) => {'
+          'const groupedHomeworkPages = classGroups.map((group, groupIndex) => {'
         ],
         [
           "  }).filter((group) => group.classes.length > 0 && group.pages.length > 0);",
-          `  }).filter((group) => group.classes.length > 0 && group.pages.length > 0);
-
-  if (groupedHomeworkPages.length) {
-    const lastGroup = groupedHomeworkPages[groupedHomeworkPages.length - 1];
-    const currentEntries = lastGroup.pages.flat().filter((entry) => entry.progressDate !== '10/07');
-    const signatureEntry = {
-      date: 'SAMEDI 10/07/2027',
-      sessions: [{ hour: 'Administration', className: '' }],
-      text: 'Signature procès-verbal',
-      isHoliday: false,
-      isExam: false,
-      isSignature: true,
-      progressDate: '10/07',
-      color: '#8b5cf6',
-      eventKey: 'forced-signature-10-07-2027'
-    };
-    lastGroup.pages = chunkEntries([...currentEntries, signatureEntry], 5);
-  }`
+          '  }).filter((group) => group.classes.length > 0 && group.pages.length > 0);'
         ],
         [
           "style={entry.isHoliday ? holidayTextStyle : entry.isExam ? examTextStyle : dotTextStyle}",
