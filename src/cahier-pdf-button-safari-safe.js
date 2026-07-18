@@ -282,12 +282,19 @@ const keepReferencePagesLast = (zone) => {
   if (holidaysPage) zone.append(holidaysPage);
 };
 
+const waitForLatestTimetable = async () => {
+  const activeElement = document.activeElement;
+  if (activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement) {
+    activeElement.blur();
+  }
+
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+};
+
 const buildExportHtml = () => {
   const pages = Array.from(document.querySelectorAll('.cahier-preview-zone .a4-page, .cahier-preview-zone .cahier-page')).filter((page) => {
     if (page.matches(LEGACY_COVER_SELECTOR)) return false;
-    const rect = page.getBoundingClientRect();
-    const style = window.getComputedStyle(page);
-    return rect.width > 50 && rect.height > 50 && style.display !== 'none' && style.visibility !== 'hidden';
+    return true;
   });
 
   if (!pages.length) throw new Error('Aucune page A4 trouvée');
@@ -390,6 +397,7 @@ const exportPdf = async (button, mode = 'download') => {
   button.textContent = 'Préparation PDF...';
 
   try {
+    await waitForLatestTimetable();
     if (document.fonts?.ready) await document.fonts.ready;
 
     /* L'aperçu conserve le chemin serveur existant afin de rester compatible

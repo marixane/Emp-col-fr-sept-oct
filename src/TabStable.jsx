@@ -125,7 +125,6 @@ export default function TabStable() {
           <input value={teacher} onChange={(e) => setTeacher(e.target.value)} onKeyDown={validateOnEnter} />
           <input value={schoolYear} readOnly aria-label="Année scolaire automatique" />
         </header>
-        <button type="button" className="no-print" onClick={generatePages} style={{ margin: '0 auto 8px', width: '220px', display: 'block', background: '#16a34a' }}>Actualiser les pages</button>
         <div className="total-hours-control"><span>Total heures :</span><strong>{totalHours} h</strong></div>
         <table className="timetable-table">
           <thead><tr><th>Jour</th>{hours.map((hour, index) => <th key={index}><textarea value={hour} onChange={(e) => setHours((current) => current.map((item, i) => i === index ? e.target.value : item))} onKeyDown={validateOnEnter} rows="2" /></th>)}</tr></thead>
