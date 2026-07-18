@@ -1,4 +1,5 @@
-import { useEffect, useLayoutEffect } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import CoverPage from './CoverPage.jsx';
 import TabWithFullDates from './TabWithFullDates.jsx';
 import { scheduleFullDates } from './force-full-cahier-dates.js';
 
@@ -47,6 +48,8 @@ const refreshLayout = () => {
 };
 
 export default function App() {
+  const [coverClassGroups, setCoverClassGroups] = useState([]);
+
   useEffect(() => {
     document.body.classList.add('cahier-tab-active');
     document.body.classList.remove('devoir-tab-active');
@@ -245,6 +248,7 @@ export default function App() {
         line-height: 1.05 !important;
       }
     `}</style>
-    <TabWithFullDates />
+    <CoverPage classGroups={coverClassGroups} />
+    <TabWithFullDates onClassGroupsChange={setCoverClassGroups} />
   </>;
 }
