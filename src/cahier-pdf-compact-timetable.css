@@ -5,15 +5,15 @@
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  min-height: 64px;
+  min-height: 26px;
   margin: 0;
   padding: 0;
   border: 0;
   border-radius: 0;
-  background: linear-gradient(145deg, rgba(255,255,255,.08), rgba(15,23,42,.10));
-  color: rgba(255,255,255,.92);
+  background: linear-gradient(180deg, #f8fafc 0%, #e5e7eb 100%);
+  color: #4b5563;
   cursor: pointer;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 0 rgba(0,0,0,.20);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.85), inset 0 -1px 0 rgba(17,24,39,.14);
   transition: background .15s ease, box-shadow .15s ease, color .15s ease;
 }
 
@@ -26,8 +26,8 @@
 }
 
 .compact-timetable-pdf-toggle:hover {
-  background: rgba(255,255,255,.10);
-  color: #fff;
+  background: linear-gradient(180deg, #ffffff 0%, #dfe3e8 100%);
+  color: #111827;
 }
 
 .compact-timetable-pdf-toggle:active {
@@ -37,7 +37,7 @@
 
 .compact-timetable-pdf-icon {
   display: block;
-  font: 700 23px/1 Arial, sans-serif;
+  font: 700 18px/1 Arial, sans-serif;
   color: currentColor;
   text-shadow: 0 1px 2px rgba(0,0,0,.28);
   opacity: .9;
@@ -48,6 +48,21 @@
   text-align: center !important;
   vertical-align: middle !important;
   overflow: hidden !important;
+}
+
+/* En-tête des heures plus fin, bouton compris. */
+.cahier-page > .timetable-table thead tr {
+  height: 28px !important;
+}
+
+.cahier-page > .timetable-table thead th {
+  height: 28px !important;
+  max-height: 28px !important;
+}
+
+.cahier-page > .timetable-table thead th textarea {
+  padding-top: 3px !important;
+  line-height: .95 !important;
 }
 
 /* La même option agit immédiatement sur le tableau web. */
