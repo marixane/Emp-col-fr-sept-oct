@@ -391,6 +391,34 @@ const showPreviewLoading = (previewWindow) => {
   previewWindow.document.close();
 };
 
+const showInstantHtmlPreview = (previewWindow, html) => {
+  previewWindow.document.open();
+  previewWindow.document.write(`<!doctype html>
+    <html lang="fr">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Aperçu PDF</title>
+      </head>
+      <body class="cahier-tab-active cahier-instant-preview">
+        ${html}
+        <style>
+          html,body{margin:0!important;padding:0!important;min-height:100%!important;background:#242a33!important;overflow:auto!important}
+          body{padding:22px 0!important}
+          .cahier-preview-zone{display:block!important;margin:0 auto!important;overflow:visible!important;height:auto!important;max-height:none!important}
+          .cahier-preview-zone>.a4-page,.cahier-preview-zone>.cahier-page{
+            display:block!important;position:relative!important;left:auto!important;top:auto!important;
+            margin:0 auto 22px!important;box-shadow:0 10px 30px rgba(0,0,0,.38)!important;
+            visibility:visible!important;opacity:1!important;pointer-events:none!important
+          }
+          button,.no-print{display:none!important}
+        </style>
+      </body>
+    </html>`);
+  previewWindow.document.close();
+  previewWindow.focus();
+};
+
 const submitPreviewForm = (html, previewWindow) => {
   const form = document.createElement('form');
   form.method = 'POST';
@@ -460,15 +488,13 @@ const exportPdf = async (button, mode = 'download') => {
 
     if (mode === 'preview') {
       const html = buildExportHtml();
-      button.textContent = 'Génération PDF...';
-      const bytes = await requestPdfChunk(html);
-      button.textContent = 'Ouverture PDF...';
-      previewWindow.postMessage({ type: 'CAHIER_PDF_READY', bytes }, '*', [bytes]);
-      previewWindow.focus();
+      button.textContent = 'Ouverture aperçu...';
+      showInstantHtmlPreview(previewWindow, html);
+      button.textContent = 'Aperçu ouvert';
       window.setTimeout(() => {
         button.textContent = original;
         button.disabled = false;
-      }, 1200);
+      }, 800);
       return;
     }
 
