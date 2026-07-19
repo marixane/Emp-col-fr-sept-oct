@@ -450,6 +450,16 @@ const exportPdf = async (button, mode = 'download') => {
   const original = button.textContent;
   let previewWindow = null;
 
+  if (mode === 'preview' && button.dataset.readyPdfUrl) {
+    const url = button.dataset.readyPdfUrl;
+    window.open(url, '_blank', 'noopener');
+    delete button.dataset.readyPdfUrl;
+    button.textContent = button.dataset.previewIdleLabel || 'Aperçu PDF';
+    window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+    return;
+  }
+  if (mode === 'preview') button.dataset.previewIdleLabel = original;
+
   button.disabled = true;
   button.textContent = 'Préparation PDF...';
 
@@ -464,18 +474,9 @@ const exportPdf = async (button, mode = 'download') => {
       // Même fabrication que « Télécharger PDF » : le serveur retourne le
       // véritable fichier PDF. Seule l'action finale devient un affichage.
       const bytes = await requestPdfChunk(html);
-      button.textContent = 'Ouverture PDF...';
-      const targetName = `cahier-pdf-preview-${Date.now()}`;
-      previewWindow = window.open('about:blank', targetName);
-      if (!previewWindow) throw new Error('Autorisez les fenêtres surgissantes pour voir le PDF.');
-      showPreviewLoading(previewWindow);
-      setPreviewStatus(previewWindow, 'Ouverture du PDF…');
-      previewWindow.postMessage({ type: 'CAHIER_PDF_READY', bytes }, '*', [bytes]);
-      previewWindow.focus();
-      window.setTimeout(() => {
-        button.textContent = original;
-        button.disabled = false;
-      }, 1200);
+      button.dataset.readyPdfUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+      button.textContent = 'Ouvrir PDF';
+      button.disabled = false;
       return;
     }
 
