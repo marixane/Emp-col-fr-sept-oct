@@ -5,6 +5,9 @@ const applyCompactTimetableState = (enabled) => {
   document.querySelectorAll('.timetable-table').forEach((table) => {
     table.classList.toggle('compact-pdf-hours', enabled);
   });
+  window.dispatchEvent(new CustomEvent('cahier-compact-timetable-change', {
+    detail: { enabled },
+  }));
 };
 
 const arrangeTimetableControls = () => {
