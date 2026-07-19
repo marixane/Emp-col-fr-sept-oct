@@ -63,7 +63,9 @@ const installCompactTimetableToggle = () => {
     icon.setAttribute('aria-hidden', 'true');
 
     const refreshAppearance = () => {
-      icon.textContent = checkbox.checked ? '⤢' : '⤡';
+      icon.innerHTML = checkbox.checked
+        ? '<svg viewBox="0 0 24 24" focusable="false"><path d="M9 9 5 5m0 0h4M5 5v4m10 0 4-4m0 0h-4m4 0v4M9 15l-4 4m0 0h4m-4 0v-4m10 0 4 4m0 0h-4m4 0v-4"/></svg>'
+        : '<svg viewBox="0 0 24 24" focusable="false"><path d="M4 4l5 5m0 0V5m0 4H5m15-5-5 5m0 0h4m-4 0V5M4 20l5-5m0 0H5m4 0v4m11 1-5-5m0 0v4m0-4h4"/></svg>';
       wrapper.title = checkbox.checked ? 'Élargir le tableau' : 'Réduire le tableau';
       wrapper.setAttribute('aria-label', wrapper.title);
       wrapper.setAttribute('data-compact', checkbox.checked ? 'true' : 'false');
